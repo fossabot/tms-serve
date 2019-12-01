@@ -1,0 +1,35 @@
+package com.odakota.tms.business.auth.controller;
+
+import com.odakota.tms.business.auth.entity.Permission;
+import com.odakota.tms.business.auth.resource.PermissionResource;
+import com.odakota.tms.business.auth.service.PermissionService;
+import com.odakota.tms.constant.ApiVersion;
+import com.odakota.tms.system.annotations.NoAuthentication;
+import com.odakota.tms.system.base.BaseController;
+import com.odakota.tms.system.config.data.ResponseData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @author haidv
+ * @version 1.0
+ */
+@RestController
+public class PermissionController extends BaseController<Permission, PermissionResource> {
+
+    private final PermissionService permissionService;
+
+    @Autowired
+    public PermissionController(PermissionService permissionService) {
+        super(permissionService);
+        this.permissionService = permissionService;
+    }
+
+    @NoAuthentication
+    @GetMapping(value = "/permissions", produces = ApiVersion.API_VERSION_1)
+    public ResponseEntity<ResponseData> getPermissions() {
+        return ResponseEntity.ok(new ResponseData<>().success(permissionService.getPermissions()));
+    }
+}

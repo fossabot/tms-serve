@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Automated mail</title>
+</head>
+<body>
+    <p> Dear <b> <span th:text="${fullName}"></span> </b></p>
+    <p>
+        The otp code to confirm your password reset is: <b> <span th:text="${otp}"></span> </b>
+    </p>
+    <p><b><i>Note: This code has a validity period of 15 minutes. If past this time the code will not be accepted.<br>
+        Do not share this code with anyone other than you.</i></b></p>
+    <p>
+        Regards, <br/>
+        <em>The IT Team</em>
+    </p>
+    <br>
+    <br>
+    <p><i>This is an automated mail sent from the system. You do not need to reply to this message.</i></p>
+</body>
+</html>

@@ -1,0 +1,72 @@
+server:
+  port: ${PORT}
+  servlet:
+    context-path: /api/
+spring:
+  application:
+    name: tms-serve
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+          batch-size: 100
+          generate_statistics: true
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+  ## quartz config
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: tms-quartz-app
+            instanceId: AUTO
+          threadPool:
+            threadCount: 20
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            useProperties: false
+            misfireThreshold: 6000
+            tablePrefix: qrtz_
+            isClustered: false
+          plugin:
+            shutdownHook:
+              class: org.quartz.plugins.management.ShutdownHookPlugin
+              cleanShutdown: true
+  mvc:
+    throw-exception-if-no-handler-found: true
+  sendgrid:
+    api-key: ${SENDGRID_API_KEY}
+logging:
+  config: "classpath:log4j2-spring.xml"
+email:
+  send:
+    from: ${ROOT_EMAIL}
+storage:
+  image-storage-name: /tmp/images/
+  import-storage-name: /tmp/imports/
+  exports-storage-name: /tmp/exports/
+auth:
+  token:
+    secret-key: dG1zLXN0YWZmLWF1dGhlbnRpY2F0aW9uLXNlY3JldC1rZXk=
+    expiration-time: 99999999
+    subject: tms-serve-authentication
+    issuer: jp-odakota

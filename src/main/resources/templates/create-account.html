@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Automated mail</title>
+</head>
+<body>
+    <p> Dear <b> <span th:text="${fullName}"></span> </b></p>
+    <p>
+        This is the login information for your system:
+    </p>
+    <p style="padding-left: 25px">
+        Username: <span th:text="${userName}"></span> <br>
+        Password: <span th:text="${password}"></span>
+    </p>
+    <p><b><i>Note: You should change your password after you first log in.</i></b></p>
+    <p>
+        Regards, <br/>
+        <em>The IT Team</em>
+    </p>
+    <br>
+    <br>
+    <p><i>This is an automated mail sent from the system. You do not need to reply to this message.</i></p>
+</body>
+</html>
