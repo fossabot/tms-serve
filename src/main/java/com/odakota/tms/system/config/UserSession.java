@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter @Setter
 public class UserSession {
 
-    private Integer userId;
+    private Long userId;
 
     private String username;
 }

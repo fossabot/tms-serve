@@ -9,6 +9,7 @@ public class WebSocketConfig {
 
     /**
      * Inject ServerEndpointExporter, This bean will automatically register the Websocket endpoint using the
+     *
      * @ServerEndpoint annotation declaration
      */
     @Bean

@@ -22,8 +22,9 @@ public class SpaceUtils {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static Object trimReflective(Object object) throws Exception {
-        if (object == null)
+        if (object == null) {
             return null;
+        }
 
         Class<?> c = object.getClass();
         // Introspected usage to pick the getters conveniently thereby
@@ -39,8 +40,10 @@ public class SpaceUtils {
                 if (property != null) {
                     Method setter = c.getMethod("set" + name.substring(3), String.class);
                     if (setter != null)
-                        // Setter to trim and set the trimmed String value
+                    // Setter to trim and set the trimmed String value
+                    {
                         setter.invoke(object, property.trim());
+                    }
                 }
             }
 
@@ -66,9 +69,11 @@ public class SpaceUtils {
                     Method setter = c.getMethod("set" + name.substring(3), String[].class);
                     if (setter != null) {
                         String[] modifiedArray = new String[propertyArray.length];
-                        for (int i = 0; i < propertyArray.length; i++)
-                            if (propertyArray[i] != null)
+                        for (int i = 0; i < propertyArray.length; i++) {
+                            if (propertyArray[i] != null) {
                                 modifiedArray[i] = propertyArray[i].trim();
+                            }
+                        }
 
                         // Explicit wrapping
                         setter.invoke(object, (Object) modifiedArray);

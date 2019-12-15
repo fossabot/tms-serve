@@ -5,6 +5,7 @@ import com.odakota.tms.system.annotations.NoAuthentication;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.config.exception.UnAuthorizedException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -22,6 +23,13 @@ import java.lang.reflect.Method;
 @Component
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
+    private final TokenProvider tokenProvider;
+
+    @Autowired
+    public AuthenticationInterceptor(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
@@ -37,12 +45,11 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         }
         // Validate all private APIs
         if (method.isAnnotationPresent(RequiredAuthentication.class)) {
-//            if (StringUtils.isEmpty(authHeader) || !authHeader.startsWith("Bearer")) {
-//                throw new UnAuthorizedException(MessageCode.MSG_TOKEN_AUTH_ERROR, HttpStatus.UNAUTHORIZED);
-//            } else {
-//                return validatePrivateApi(method, authHeader.replace("Bearer ", ""));
-//            }
-            return true;
+            if (StringUtils.isEmpty(authHeader) || !authHeader.startsWith("Bearer")) {
+                throw new UnAuthorizedException(MessageCode.MSG_TOKEN_AUTH_ERROR, HttpStatus.UNAUTHORIZED);
+            } else {
+                return validatePrivateApi(method, authHeader.replace("Bearer ", ""));
+            }
         }
         // If request doesn't match with any handle method, it will be reject
         throw new UnAuthorizedException(MessageCode.MSG_CODE_NOT_USE, HttpStatus.FORBIDDEN);
@@ -54,8 +61,8 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 //        if (!tokenService.existsByToken(token)) {
 //            throw new UnAuthorizedException(getMessage(MessageCode.MSG_TOKEN_NOT_EXISTED), HttpStatus.UNAUTHORIZED);
 //        }
-//        // parse info of token to user session
-//        tokenProvider.parseTokenInfoToUserSession(token);
+        // parse info of token to user session
+        tokenProvider.parseTokenInfoToUserSession(token);
 //        for (Annotation annotation : method.getDeclaredAnnotations()) {
 //            if (annotation instanceof RequiredAuthentication) {
 //                ApiId apiId = ((RequiredAuthentication) annotation).value();

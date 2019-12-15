@@ -1,6 +1,5 @@
 package com.odakota.tms.system.base;
 
-import com.odakota.tms.constant.Constant;
 import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.base.BaseParameter.FindCondition;
 import com.odakota.tms.system.config.exception.CustomException;
@@ -35,14 +34,13 @@ public abstract class BaseService<E extends BaseEntity, R extends BaseResource<E
      * @param baseReq request param
      * @return Resource search results are returned.
      */
-    @SuppressWarnings("unchecked")
     public BaseResponse<R> getResources(BaseParameter baseReq) {
         C condition = this.getCondition(baseReq.getCondition());
         if (baseReq.getPageable() == null) {
-            return new BaseResponse(this.getResources(repository.findByCondition(condition)));
+            return new BaseResponse<>(this.getResources(repository.findByCondition(condition)));
         }
         Page<E> page = repository.findByCondition(condition, baseReq.getPageable());
-        return new BaseResponse(this.getResources(page.getContent()), page);
+        return new BaseResponse<>(this.getResources(page.getContent()), page);
     }
 
     /**
@@ -114,22 +112,6 @@ public abstract class BaseService<E extends BaseEntity, R extends BaseResource<E
      */
     public boolean isExistedResource(Long id) {
         return repository.existsByIdAndDeletedFlagFalse(id);
-    }
-
-    /**
-     * Checks whether the data store contains elements with the given condition.
-     *
-     * @param id         Resource identifier
-     * @param fieldName  column name
-     * @param fieldValue column value
-     * @return boolean
-     */
-    public boolean isExistedResource(Integer id, String fieldName, String fieldValue) {
-        BaseSpecification<E> specification = new BaseSpecification<>(fieldName, fieldValue, Constant.OPERATION_EQUAL);
-        if (id != null) {
-            specification.and(new BaseSpecification<>(Constant.ID, id, Constant.OPERATION_NOT_EQUAL));
-        }
-        return repository.count(specification) > 0;
     }
 
     /**

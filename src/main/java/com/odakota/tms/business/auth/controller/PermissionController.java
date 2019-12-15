@@ -27,9 +27,14 @@ public class PermissionController extends BaseController<Permission, PermissionR
         this.permissionService = permissionService;
     }
 
+    /**
+     * API get list permissions
+     *
+     * @return {@link ResponseEntity}
+     */
     @NoAuthentication
     @GetMapping(value = "/permissions", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<ResponseData> getPermissions() {
+    public ResponseEntity<?> getPermissions() {
         return ResponseEntity.ok(new ResponseData<>().success(permissionService.getPermissions()));
     }
 }

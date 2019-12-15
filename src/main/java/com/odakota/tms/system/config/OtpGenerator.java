@@ -4,7 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.odakota.tms.constant.Constant;
-import com.odakota.tms.utils.RandomUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class OtpGenerator {
 
-    private static final Integer EXPIRE_MIN = 1;
-    private LoadingCache<String, Map> otpCache;
+    private static final Integer EXPIRE_MIN = 15;
+    private LoadingCache<String, Map<String, Object>> otpCache;
 
     /**
      * Constructor configuration.
@@ -31,10 +31,10 @@ public class OtpGenerator {
     public OtpGenerator() {
         super();
         otpCache = CacheBuilder.newBuilder().expireAfterWrite(EXPIRE_MIN, TimeUnit.MINUTES).build(
-                new CacheLoader<String, Map>() {
+                new CacheLoader<String, Map<String, Object>>() {
                     @Override
-                    public Map load(String s) {
-                        return new HashMap();
+                    public Map<String, Object> load(String s) {
+                        return new HashMap<>();
                     }
                 });
     }
@@ -45,8 +45,8 @@ public class OtpGenerator {
      * @param key - cache key
      * @return cache value (generated OTP number)
      */
-    public String generateOTP(String key, Object data) {
-        String otp = RandomUtils.generateAlphaNumeric(6);
+    public String generateOTP(String key, int len, Object data) {
+        String otp = RandomStringUtils.randomAlphanumeric(len);
         Map<String, Object> map = new HashMap<>();
         map.put(Constant.OTP_CODE_OTP, otp);
         map.put(Constant.OTP_DATA, data);
@@ -60,11 +60,11 @@ public class OtpGenerator {
      * @param key - target key
      * @return OTP value
      */
-    public Object getOPTByKey(String key) {
+    public Map<String, Object> getOPTByKey(String key) {
         try {
             return otpCache.get(key);
         } catch (ExecutionException e) {
-            return -1;
+            return null;
         }
     }
 

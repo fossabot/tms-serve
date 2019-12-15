@@ -1,4 +1,4 @@
-package com.odakota.tms.business.auth.resource;
+package com.odakota.tms.business.auth.resource.userpermission;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Setter @Getter
-public class Example implements Serializable {
+public class UserPermissionResource implements Serializable {
 
     private List<Menu> menu = null;
 

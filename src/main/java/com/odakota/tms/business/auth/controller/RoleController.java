@@ -8,8 +8,6 @@ import com.odakota.tms.enums.ApiId;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.base.BaseParameter;
-import com.odakota.tms.system.base.BaseResponse;
-import com.odakota.tms.system.config.data.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,8 +38,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.R_ROLE)
     @GetMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<ResponseData<BaseResponse<RoleResource>>> getRoles(
-            @ModelAttribute @Valid BaseParameter baseReq) {
+    public ResponseEntity<?> getRoles(@ModelAttribute @Valid BaseParameter baseReq) {
         return super.getResources(baseReq);
     }
 
@@ -53,27 +50,24 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.R_ROLE)
     @GetMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<ResponseData<RoleResource>> getRole(@PathVariable Long id) {
+    public ResponseEntity<?> getRole(@PathVariable Long id) {
         return super.getResource(id);
     }
 
     /**
-     * New role creation API
+     * API create new role
      *
      * @param resource resource
      * @return {@link ResponseEntity}
      */
     @RequiredAuthentication(value = ApiId.C_ROLE)
     @PostMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<ResponseData<RoleResource>> createRole(@Validated @RequestBody RoleResource resource) {
-//        if (service.existsByRoleName(null, resource.getRoleName())) {
-//            result.rejectValue(Constant.ROLE_NAME, EXISTED, MessageCode.MSG_DUPLICATED);
-//        }
+    public ResponseEntity<?> createRole(@Validated @RequestBody RoleResource resource) {
         return super.createResource(resource);
     }
 
     /**
-     * Role update API
+     * API update role
      *
      * @param id       Resource identifier
      * @param resource resource
@@ -81,13 +75,12 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.U_ROLE)
     @PutMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<ResponseData<RoleResource>> updateRole(@PathVariable Long id,
-                                                                 @RequestBody RoleResource resource) {
+    public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody RoleResource resource) {
         return super.updateResource(id, resource);
     }
 
     /**
-     * Role deletion API
+     * API delete role
      *
      * @param id Resource identifier
      * @return {@link ResponseEntity}

@@ -48,7 +48,7 @@ public abstract class BaseController<E extends BaseEntity, R extends BaseResourc
     /**
      * New resource creation API
      *
-     * @param resource   resource
+     * @param resource resource
      * @return {@link ResponseEntity}
      */
     @SuppressWarnings("unchecked")

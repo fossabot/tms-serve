@@ -1,7 +1,10 @@
 package com.odakota.tms.system.base;
 
+import com.odakota.tms.constant.Constant;
+import com.odakota.tms.constant.FieldConstant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -78,5 +81,24 @@ public interface BaseRepository<E extends BaseEntity, C extends BaseCondition> e
     default void delete(E e) {
         e.setDeletedFlag(true);
         this.save(e);
+    }
+
+    /**
+     * Checks whether the data store contains elements with the given condition.
+     *
+     * @param id         Resource identifier
+     * @param fieldName  column name
+     * @param fieldValue column value
+     * @return boolean
+     */
+    default boolean isExistedResource(Integer id, String fieldName, String fieldValue) {
+        Specification<E> specification = new BaseSpecification<>(fieldName, fieldValue, Constant.OPERATION_EQUAL);
+        specification = specification.and(new BaseSpecification<>(FieldConstant.DELETED_FLAG, false,
+                                                                  Constant.OPERATION_EQUAL));
+        if (id != null) {
+            specification = specification
+                    .and(new BaseSpecification<>(FieldConstant.ID, id, Constant.OPERATION_NOT_EQUAL));
+        }
+        return this.count(specification) > 0;
     }
 }

@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 /**
  * @author haidv
  * @version 1.0
@@ -19,9 +17,7 @@ import java.util.Optional;
 public interface RoleRepository extends BaseRepository<Role, RoleCondition> {
 
     @Query("select r from Role r " +
-           "where r.deletedFlag = false and (:#{#condition.roleName} is null "+
+           "where r.deletedFlag = false and (:#{#condition.roleName} is null " +
            "or (r.roleName like %:#{#condition.roleName}% or r.roleCode like %:#{#condition.roleName}%))")
     Page<Role> findByCondition(@Param("condition") RoleCondition condition, Pageable pageable);
-
-    Optional<Role> findByDeletedFlagFalseAndRoleName(String roleName);
 }
