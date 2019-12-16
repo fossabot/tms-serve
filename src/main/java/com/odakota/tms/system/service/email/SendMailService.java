@@ -1,4 +1,4 @@
-package com.odakota.tms.system.config.email;
+package com.odakota.tms.system.service.email;
 
 import com.odakota.tms.enums.TemplateName;
 

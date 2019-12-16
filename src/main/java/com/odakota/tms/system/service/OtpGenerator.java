@@ -1,4 +1,4 @@
-package com.odakota.tms.system.config;
+package com.odakota.tms.system.service;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -50,6 +50,20 @@ public class OtpGenerator {
         Map<String, Object> map = new HashMap<>();
         map.put(Constant.OTP_CODE_OTP, otp);
         map.put(Constant.OTP_DATA, data);
+        otpCache.put(key, map);
+        return otp;
+    }
+
+    /**
+     * Method for generating OTP and put it in cache.
+     *
+     * @param key - cache key
+     * @return cache value (generated OTP number)
+     */
+    public String generateOTP(String key) {
+        String otp = RandomStringUtils.randomNumeric(1000, 9999);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constant.OTP_CODE_OTP, otp);
         otpCache.put(key, map);
         return otp;
     }

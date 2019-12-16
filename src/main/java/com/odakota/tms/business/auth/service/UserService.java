@@ -31,7 +31,7 @@ public class UserService extends BaseService<User, UserResource, UserCondition> 
         this.userRepository = userRepository;
     }
 
-    public User getUser(String username){
+    public User getUser(String username) {
         return userRepository.findByUsernameAndDeletedFlagFalse(username)
                              .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS,
                                                                     HttpStatus.BAD_REQUEST));
