@@ -70,3 +70,10 @@ auth:
     expiration-time: 99999999
     subject: tms-serve-authentication
     issuer: jp-odakota
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIAIEHS7T2I6ZWUZIOA
+      secretKey: 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
+    region:
+      static: ap-southeast-1

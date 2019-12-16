@@ -1,4 +1,4 @@
-package com.odakota.tms.system.config.scheduler;
+package com.odakota.tms.system.service.scheduler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.quartz.QuartzProperties;

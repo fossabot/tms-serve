@@ -10,10 +10,11 @@ import com.odakota.tms.business.auth.resource.userpermission.PermissionMetaResou
 import com.odakota.tms.business.auth.resource.userpermission.UserPermissionResource;
 import com.odakota.tms.constant.Constant;
 import com.odakota.tms.constant.MessageCode;
-import com.odakota.tms.system.config.OtpGenerator;
 import com.odakota.tms.system.config.UserSession;
 import com.odakota.tms.system.config.exception.CustomException;
 import com.odakota.tms.system.config.interceptor.TokenProvider;
+import com.odakota.tms.system.service.OtpGenerator;
+import com.odakota.tms.system.service.sns.SmsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,15 +42,19 @@ public class LoginService {
 
     private final UserSession userSession;
 
+    private final SmsService smsService;
+
     @Autowired
-    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                        TokenProvider tokenProvider, PermissionService permissionService, OtpGenerator otpGenerator, UserSession userSession) {
+    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, TokenProvider tokenProvider,
+                        PermissionService permissionService, OtpGenerator otpGenerator, UserSession userSession,
+                        SmsService smsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
         this.permissionService = permissionService;
         this.otpGenerator = otpGenerator;
         this.userSession = userSession;
+        this.smsService = smsService;
     }
 
     /**
@@ -99,6 +104,14 @@ public class LoginService {
         map.put("key", key);
         map.put("code", code);
         return map;
+    }
+
+    /**
+     * Send sms otp
+     */
+    public void sendSmsOTP(String phone, Integer smsType) {
+        String code = otpGenerator.generateOTP(phone);
+        smsService.sendSMSMessage(code, phone);
     }
 
     public UserPermissionResource getUserPermissions() {

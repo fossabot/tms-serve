@@ -29,14 +29,26 @@ public class LoginController {
     }
 
     /**
-     * API login
+     * API login with account
      *
      * @param resource login resource
      * @return {@link ResponseEntity}
      */
     @NoAuthentication
-    @PostMapping(value = "/login", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> login(@RequestBody LoginResource resource) {
+    @PostMapping(value = "/account-login", produces = ApiVersion.API_VERSION_1)
+    public ResponseEntity<?> accountLogin(@RequestBody LoginResource resource) {
+        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource)));
+    }
+
+    /**
+     * API login with phone
+     *
+     * @param resource login resource
+     * @return {@link ResponseEntity}
+     */
+    @NoAuthentication
+    @PostMapping(value = "/phone-login", produces = ApiVersion.API_VERSION_1)
+    public ResponseEntity<?> phoneLogin(@RequestBody LoginResource resource) {
         return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource)));
     }
 
@@ -60,6 +72,18 @@ public class LoginController {
     @GetMapping(value = "/captcha", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> generateLoginCaptCha() {
         return ResponseEntity.ok(new ResponseData<>().success(loginService.generateLoginCaptCha()));
+    }
+
+    /**
+     * API send otp login sms
+     *
+     * @return {@link ResponseEntity}
+     */
+    @NoAuthentication
+    @GetMapping(value = "/sms-otp", produces = ApiVersion.API_VERSION_1)
+    public ResponseEntity<?> sendOtp(@RequestParam String phone, @RequestParam Integer smsType) {
+        loginService.sendSmsOTP(phone, smsType);
+        return ResponseEntity.ok(new ResponseData<>());
     }
 
     /**

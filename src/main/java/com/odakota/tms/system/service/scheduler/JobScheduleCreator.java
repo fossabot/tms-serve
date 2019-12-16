@@ -1,4 +1,4 @@
-package com.odakota.tms.system.config.scheduler;
+package com.odakota.tms.system.service.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronTrigger;

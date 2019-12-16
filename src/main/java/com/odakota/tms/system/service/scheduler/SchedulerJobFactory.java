@@ -1,4 +1,4 @@
-package com.odakota.tms.system.config.scheduler;
+package com.odakota.tms.system.service.scheduler;
 
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
