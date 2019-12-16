@@ -5,10 +5,13 @@ import com.odakota.tms.business.auth.mapper.AuthMapper;
 import com.odakota.tms.business.auth.repository.UserRepository;
 import com.odakota.tms.business.auth.resource.UserResource;
 import com.odakota.tms.business.auth.resource.UserResource.UserCondition;
+import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.base.BaseParameter.FindCondition;
 import com.odakota.tms.system.base.BaseService;
+import com.odakota.tms.system.config.exception.CustomException;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +29,12 @@ public class UserService extends BaseService<User, UserResource, UserCondition> 
     public UserService(UserRepository userRepository) {
         super(userRepository);
         this.userRepository = userRepository;
+    }
+
+    public User getUser(String username){
+        return userRepository.findByUsernameAndDeletedFlagFalse(username)
+                             .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS,
+                                                                    HttpStatus.BAD_REQUEST));
     }
 
     /**

@@ -1,12 +1,15 @@
 package com.odakota.tms.business.auth.resource;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.odakota.tms.business.auth.entity.User;
+import com.odakota.tms.constant.Constant;
 import com.odakota.tms.system.base.BaseCondition;
 import com.odakota.tms.system.base.BaseResource;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -27,6 +30,8 @@ public class UserResource extends BaseResource<User> {
 
     private int sex;
 
+    @DateTimeFormat(pattern = Constant.YYYY_MM_DD)
+    @JsonFormat(pattern = Constant.YYYY_MM_DD)
     private Date birthDay;
 
     private String avatar;

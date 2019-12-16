@@ -26,11 +26,12 @@ public class JobScheduleCreator {
     /**
      * Create Quartz Job.
      *
-     * @param jobClass  Class whose executeInternal() method needs to be called.
-     * @param isDurable Job needs to be persisted even after completion. if true, job will be persisted, not otherwise.
-     * @param context   Spring application context.
-     * @param jobName   Job name.
-     * @param jobGroup  Job group.
+     * @param jobClass   Class whose executeInternal() method needs to be called.
+     * @param isDurable  Job needs to be persisted even after completion. if true, job will be persisted, not
+     *                   otherwise.
+     * @param context    Spring application context.
+     * @param jobName    Job name.
+     * @param jobGroup   Job group.
      * @param jobDataMap Job data
      * @return JobDetail object
      */

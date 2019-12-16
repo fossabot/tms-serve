@@ -1,4 +1,4 @@
-package com.odakota.tms.business.auth.resource;
+package com.odakota.tms.business.auth.resource.userpermission;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +23,7 @@ public class Menu implements Serializable {
 
     private String component;
 
-    private Meta meta;
+    private PermissionMetaResource meta;
 
     private Object redirect;
 

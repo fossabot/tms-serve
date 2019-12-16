@@ -29,7 +29,6 @@ public class RoleResource extends BaseResource<Role> {
     @Size(max = 256, message = MessageCode.MSG_MAX_LENGTH)
     private String roleCode;
 
-    @NotBlank(message = MessageCode.MSG_REQUIRED)
     @Size(max = 2000, message = MessageCode.MSG_MAX_LENGTH)
     private String description;
 

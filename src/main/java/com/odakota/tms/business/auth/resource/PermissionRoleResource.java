@@ -19,7 +19,9 @@ public class PermissionRoleResource extends BaseResource<PermissionRole> {
 
     private Long roleId;
 
-    private Long permissionId;
+    private String permissionIds;
+
+    private String lastPermissionIds;
 
     /**
      * @author haidv

@@ -22,10 +22,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint("/websocket/{userId}")
 public class WebSocket {
 
-    private Session session;
-
     private static CopyOnWriteArraySet<WebSocket> webSockets = new CopyOnWriteArraySet<>();
     private static Map<String, Session> sessionPool = new HashMap<>();
+    private Session session;
 
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "userId") String userId) {

@@ -22,19 +22,15 @@ import java.util.Date;
 @Component
 public class TokenProvider {
 
+    private final UserSession userSession;
     @Value("${auth.token.secret-key}")
     private String secretKey;
-
     @Value("#{new Integer('${auth.token.expiration-time}')}")
     private int tokenExpiration;
-
     @Value("${auth.token.subject}")
     private String subject;
-
     @Value("${auth.token.issuer}")
     private String issuer;
-
-    private final UserSession userSession;
 
     @Autowired
     public TokenProvider(UserSession userSession) {
@@ -61,7 +57,7 @@ public class TokenProvider {
     void parseTokenInfoToUserSession(String token) throws UnAuthorizedException {
         try {
             Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-            userSession.setUserId(Integer.parseInt(claims.get(Constant.TOKEN_CLAIM_USER_ID).toString()));
+            userSession.setUserId(Long.parseLong(claims.get(Constant.TOKEN_CLAIM_USER_ID).toString()));
             userSession.setUsername(claims.get(Constant.TOKEN_CLAIM_USER_NAME).toString());
         } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException | SignatureException ex) {
             throw new UnAuthorizedException(MessageCode.MSG_TOKEN_INVALID, HttpStatus.UNAUTHORIZED);

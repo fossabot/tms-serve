@@ -8,8 +8,6 @@ import com.odakota.tms.enums.ApiId;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.base.BaseParameter;
-import com.odakota.tms.system.base.BaseResponse;
-import com.odakota.tms.system.config.data.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +39,7 @@ public class UserController extends BaseController<User, UserResource> {
      */
     @RequiredAuthentication(value = ApiId.R_ROLE)
     @GetMapping(value = "/users", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<ResponseData<BaseResponse<UserResource>>> getResources(
-            @ModelAttribute @Valid BaseParameter baseReq) {
+    public ResponseEntity<?> getUsers(@ModelAttribute @Valid BaseParameter baseReq) {
         return super.getResources(baseReq);
     }
 }

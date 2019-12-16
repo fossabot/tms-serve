@@ -59,8 +59,7 @@ public @interface FieldMatch {
      */
     @Target({TYPE, ANNOTATION_TYPE})
     @Retention(RUNTIME)
-    @Documented
-    public @interface List {
+    @Documented @interface List {
 
         FieldMatch[] value();
     }

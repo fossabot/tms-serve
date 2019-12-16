@@ -6,6 +6,7 @@ import com.odakota.tms.system.base.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author haidv
@@ -15,4 +16,6 @@ import java.util.List;
 public interface PermissionRoleRepository extends BaseRepository<PermissionRole, PermissionRoleCondition> {
 
     List<PermissionRole> findByRoleIdAndDeletedFlagFalse(Long roleId);
+
+    Optional<PermissionRole> findByRoleIdAndPermissionIdAndDeletedFlagFalse(Long roleId, Long permissionId);
 }

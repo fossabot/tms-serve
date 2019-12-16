@@ -1,4 +1,4 @@
-package com.odakota.tms.business.auth.resource;
+package com.odakota.tms.business.auth.resource.userpermission;
 
 import lombok.Getter;
 import lombok.Setter;

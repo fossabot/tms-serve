@@ -14,5 +14,5 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends BaseRepository<User, UserCondition> {
 
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameAndDeletedFlagFalse(String username);
 }

@@ -5,10 +5,15 @@ import com.odakota.tms.business.auth.mapper.AuthMapper;
 import com.odakota.tms.business.auth.repository.RoleRepository;
 import com.odakota.tms.business.auth.resource.RoleResource;
 import com.odakota.tms.business.auth.resource.RoleResource.RoleCondition;
+import com.odakota.tms.constant.Constant;
+import com.odakota.tms.constant.FieldConstant;
+import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.base.BaseParameter.FindCondition;
 import com.odakota.tms.system.base.BaseService;
+import com.odakota.tms.system.config.exception.CustomException;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +31,34 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
     public RoleService(RoleRepository roleRepository) {
         super(roleRepository);
         this.roleRepository = roleRepository;
+    }
+
+
+    /**
+     * Create a new role.
+     *
+     * @param resource resource
+     * @return The created role is returned.
+     */
+    public RoleResource createResource(RoleResource resource) {
+        // check duplicate roleCode
+        if (roleRepository.isExistedResource(null, FieldConstant.ROLE_CODE, resource.getRoleCode())) {
+            throw new CustomException(MessageCode.MSG_ROLE_CODE_EXISTED, HttpStatus.CONFLICT);
+        }
+        return super.createResource(resource);
+    }
+
+    /**
+     * Delete role by id.
+     *
+     * @param id Resource identifier
+     */
+    public void deleteResource(Long id) {
+        // check role default
+        if (Constant.ROLE_ID_DEFAULT == id) {
+            throw new CustomException(MessageCode.MSG_ROLE_NOT_DELETED, HttpStatus.BAD_REQUEST);
+        }
+        super.deleteResource(id);
     }
 
     /**
