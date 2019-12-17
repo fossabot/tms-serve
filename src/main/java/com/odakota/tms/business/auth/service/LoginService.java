@@ -10,6 +10,8 @@ import com.odakota.tms.business.auth.resource.userpermission.PermissionMetaResou
 import com.odakota.tms.business.auth.resource.userpermission.UserPermissionResource;
 import com.odakota.tms.constant.Constant;
 import com.odakota.tms.constant.MessageCode;
+import com.odakota.tms.enums.LoginType;
+import com.odakota.tms.enums.SmsType;
 import com.odakota.tms.system.config.UserSession;
 import com.odakota.tms.system.config.exception.CustomException;
 import com.odakota.tms.system.config.interceptor.TokenProvider;
@@ -63,9 +65,15 @@ public class LoginService {
      * @param loginResource LoginResource
      * @return Object
      */
-    public Object login(LoginResource loginResource) {
+    public Object login(LoginResource loginResource, LoginType loginType) {
+        String key;
+        if (loginType.equals(LoginType.ACCOUNT)) {
+            key = loginResource.getCheckKey();
+        } else {
+            key = Constant.LOGIN_PHONE_PREFIX_KEY + loginResource.getPhone();
+        }
         // check captcha
-        Map<String, Object> map = otpGenerator.getOPTByKey(loginResource.getCheckKey());
+        Map<String, Object> map = otpGenerator.getOPTByKey(key);
         if (map == null || map.size() == 0) {
             throw new CustomException(MessageCode.MSG_CAPTCHA_EXPIRED, HttpStatus.BAD_REQUEST);
         }
@@ -73,12 +81,14 @@ public class LoginService {
             throw new CustomException(MessageCode.MSG_CAPTCHA_INVALID, HttpStatus.BAD_REQUEST);
         }
         // clear cache
-        otpGenerator.clearOTPFromCache(loginResource.getCheckKey());
-        User user = userRepository.findByUsernameAndDeletedFlagFalse(loginResource.getUsername())
-                                  .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS,
-                                                                         HttpStatus.BAD_REQUEST));
+        otpGenerator.clearOTPFromCache(key);
+        User user = userRepository
+                .findByUsernameOrPhoneAndDeletedFlagFalse(loginResource.getUsername(), loginResource.getPhone())
+                .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS,
+                                                       HttpStatus.BAD_REQUEST));
         // check password
-        if (!passwordEncoder.matches(loginResource.getPassword(), user.getPassword())) {
+        if (loginType.equals(LoginType.ACCOUNT) &&
+            !passwordEncoder.matches(loginResource.getPassword(), user.getPassword())) {
             throw new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS, HttpStatus.BAD_REQUEST);
         }
         // check status
@@ -110,8 +120,19 @@ public class LoginService {
      * Send sms otp
      */
     public void sendSmsOTP(String phone, Integer smsType) {
-        String code = otpGenerator.generateOTP(phone);
-        smsService.sendSMSMessage(code, phone);
+        String code = null;
+        String message = null;
+        if (smsType == SmsType.SMS_LOGIN.getValue()) {
+            code = otpGenerator.generateOTP(Constant.LOGIN_PHONE_PREFIX_KEY + phone);
+            message = "MA XAC NHAN LOGIN CUA BAN LA: " + code;
+        }
+        if (smsType == SmsType.SMS_FORGOT.getValue()) {
+            code = otpGenerator.generateOTP(Constant.FORGOT_PASS_PREFIX_KEY + phone);
+            message = "MA XAC NHAN RESET PASSWORD CUA BAN LA: " + code;
+        }
+        if (message != null && phone != null) {
+            smsService.sendSMSMessage(message, phone);
+        }
     }
 
     public UserPermissionResource getUserPermissions() {

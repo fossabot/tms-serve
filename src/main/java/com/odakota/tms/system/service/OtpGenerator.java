@@ -61,7 +61,7 @@ public class OtpGenerator {
      * @return cache value (generated OTP number)
      */
     public String generateOTP(String key) {
-        String otp = RandomStringUtils.randomNumeric(1000, 9999);
+        String otp = RandomStringUtils.randomNumeric(4, 4);
         Map<String, Object> map = new HashMap<>();
         map.put(Constant.OTP_CODE_OTP, otp);
         otpCache.put(key, map);

@@ -53,8 +53,6 @@ spring:
               cleanShutdown: true
   mvc:
     throw-exception-if-no-handler-found: true
-  sendgrid:
-    api-key: ${SENDGRID_API_KEY}
 logging:
   config: "classpath:log4j2-spring.xml"
 email:
@@ -70,3 +68,10 @@ auth:
     expiration-time: 99999999
     subject: tms-serve-authentication
     issuer: jp-odakota
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+    region:
+      static: ${AWS_REGION}

@@ -33,13 +33,11 @@ public class Constant {
     public static final String SUBJECT_CREATE_ACCOUNT = "Login information";
     public static final String SUBJECT_OTP_CONFIRM = "Verify email";
     // OTP PREFIX KEY
-    public static final String RESET_PASS_PREFIX_KEY = "reset-pass-";
+    public static final String LOGIN_PHONE_PREFIX_KEY = "login-otp-";
+    public static final String FORGOT_PASS_PREFIX_KEY = "forgot-otp-";
     // OTP FIELD NAME
     public static final String OTP_CODE_OTP = "otp";
     public static final String OTP_DATA = "data";
-    // STACK_TRACE_ELEMENT FIELD NAME
-    public static final String STACK_TRACE_TYPE = "type";
-    public static final String STACK_TRACE = "stacktrace";
 
     Constant() {
     }

@@ -15,4 +15,6 @@ import java.util.Optional;
 public interface UserRepository extends BaseRepository<User, UserCondition> {
 
     Optional<User> findByUsernameAndDeletedFlagFalse(String username);
+
+    Optional<User> findByUsernameOrPhoneAndDeletedFlagFalse(String username, String phone);
 }
