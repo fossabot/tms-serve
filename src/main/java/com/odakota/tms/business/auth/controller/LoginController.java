@@ -4,11 +4,15 @@ import com.odakota.tms.business.auth.resource.LoginResource;
 import com.odakota.tms.business.auth.service.LoginService;
 import com.odakota.tms.business.auth.service.UserService;
 import com.odakota.tms.constant.ApiVersion;
+import com.odakota.tms.enums.LoginType;
 import com.odakota.tms.system.annotations.NoAuthentication;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
+import com.odakota.tms.system.annotations.groups.OnCreate;
+import com.odakota.tms.system.annotations.groups.OnUpdate;
 import com.odakota.tms.system.config.data.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -36,8 +40,8 @@ public class LoginController {
      */
     @NoAuthentication
     @PostMapping(value = "/account-login", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> accountLogin(@RequestBody LoginResource resource) {
-        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource)));
+    public ResponseEntity<?> accountLogin(@Validated({OnCreate.class}) @RequestBody LoginResource resource) {
+        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource, LoginType.ACCOUNT)));
     }
 
     /**
@@ -48,8 +52,8 @@ public class LoginController {
      */
     @NoAuthentication
     @PostMapping(value = "/phone-login", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> phoneLogin(@RequestBody LoginResource resource) {
-        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource)));
+    public ResponseEntity<?> phoneLogin(@Validated({OnUpdate.class}) @RequestBody LoginResource resource) {
+        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource, LoginType.PHONE)));
     }
 
     /**
@@ -97,18 +101,24 @@ public class LoginController {
         return ResponseEntity.ok(new ResponseData<>().success(loginService.getUserPermissions()));
     }
 
+    /**
+     * API forgot password step 1: get user information with username
+     *
+     * @param username username
+     * @return {@link ResponseEntity}
+     */
     @NoAuthentication
     @GetMapping(value = "/forgot-password/step1", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> forgotPassStep1(@RequestParam String username) {
         return ResponseEntity.ok(new ResponseData<>().success(userService.getUser(username)));
     }
 
-    @NoAuthentication
-    @PostMapping(value = "/forgot-password/step2", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> forgotPassStep2() {
-        return ResponseEntity.ok(new ResponseData<>());
-    }
-
+    /**
+     * API forgot password step 1: get user information with username
+     *
+     * @param username username
+     * @return {@link ResponseEntity}
+     */
     @NoAuthentication
     @PostMapping(value = "/forgot-password/step3", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> forgotPassStep3() {
