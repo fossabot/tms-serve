@@ -46,6 +46,11 @@ public class MessageCode {
     public static final String MSG_ROLE_NOT_DELETED = "role.not-deleted";
     public static final String MSG_CAPTCHA_EXPIRED = "captcha.expired";
     public static final String MSG_CAPTCHA_INVALID = "captcha.invalid";
+    public static final String MSG_DOWNLOAD_S3_FAIL = "download.s3.fail";
+    public static final String MSG_UPLOAD_S3_FAIL = "upload.s3.fail";
+    public static final String MSG_DELETE_S3_FAIL = "delete.s3.fail";
+    public static final String MSG_COPY_S3_FAIL = "copy.s3.fail";
+    public static final String MSG_FILE_NOT_FOUND = "file.not.existed";
 
     MessageCode() {
     }
