@@ -26,6 +26,16 @@ public class FieldConstant {
     public static final String ID = "id";
     public static final String DELETED_FLAG = "deletedFlag";
 
+    // CONTENT METADATA KEY
+    public static final String LAST_MODIFIED = "last-modified";
+    public static final String CONTENT_LENGTH = "content-length";
+    public static final String CONTENT_TYPE = "content-type";
+    public static final String CONTENT_LANGUAGE = "content-language";
+    public static final String CONTENT_ENCODING = "content-encoding";
+    public static final String CONTENT_DISPOSITION = "content-disposition";
+    public static final String CONTENT_MD5 = "content-md5";
+    public static final String CACHE_CONTROL = "cache-control";
+
     FieldConstant() {
     }
 }

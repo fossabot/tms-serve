@@ -58,10 +58,9 @@ logging:
 email:
   send:
     from: doanhai8080@gmail.com
-storage:
-  image-storage-name: /tmp/images/
-  import-storage-name: /tmp/imports/
-  exports-storage-name: /tmp/exports/
+storage-service:
+  cdn-storage-name: /tmp/images/
+  exports-storage-name: /tmp/imports/
 auth:
   token:
     secret-key: dG1zLXN0YWZmLWF1dGhlbnRpY2F0aW9uLXNlY3JldC1rZXk=

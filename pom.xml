@@ -114,13 +114,14 @@
             <version>19.0</version>
         </dependency>
         <dependency>
-            <groupId>com.sendgrid</groupId>
-            <artifactId>sendgrid-java</artifactId>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sns</artifactId>
+            <version>1.11.574</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-sns</artifactId>
-            <version>1.11.407</version>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.574</version>
         </dependency>
 
         <dependency>
