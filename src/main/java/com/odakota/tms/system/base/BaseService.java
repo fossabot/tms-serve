@@ -4,6 +4,7 @@ import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.base.BaseParameter.FindCondition;
 import com.odakota.tms.system.config.exception.CustomException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -35,11 +36,12 @@ public abstract class BaseService<E extends BaseEntity, R extends BaseResource<E
      * @return Resource search results are returned.
      */
     public BaseResponse<R> getResources(BaseParameter baseReq) {
-        C condition = this.getCondition(baseReq.getCondition());
-        if (baseReq.getPageable() == null) {
+        C condition = this.getCondition(baseReq.getFindCondition());
+        Pageable pageRequest = BaseParameter.getPageable(baseReq.getSort(), baseReq.getPage(), baseReq.getLimit());
+        if (pageRequest == null) {
             return new BaseResponse<>(this.getResources(repository.findByCondition(condition)));
         }
-        Page<E> page = repository.findByCondition(condition, baseReq.getPageable());
+        Page<E> page = repository.findByCondition(condition, pageRequest);
         return new BaseResponse<>(this.getResources(page.getContent()), page);
     }
 

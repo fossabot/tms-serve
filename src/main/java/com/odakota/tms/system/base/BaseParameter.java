@@ -2,6 +2,8 @@ package com.odakota.tms.system.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odakota.tms.system.annotations.ConditionString;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,20 +24,21 @@ import static javax.validation.constraints.Pattern.Flag.CASE_INSENSITIVE;
  * @author haidv
  * @version 1.0
  */
+@Setter @Getter
 public class BaseParameter {
 
-    private final Integer limit;
+    private Integer limit;
 
-    private final Integer page;
+    private Integer page;
 
     @Pattern(regexp = "^[a-z0-9]+:(asc|desc)$", flags = CASE_INSENSITIVE)
-    private final String sort;
+    private String sort;
 
     /**
      * Search condition string (Base64(JSON))
      */
     @ConditionString
-    private final String condition;
+    private String condition;
 
     public BaseParameter(Integer limit, Integer page, String sort, String condition) {
         this.limit = (limit != null && limit <= 0) ? null : limit;
@@ -44,14 +47,14 @@ public class BaseParameter {
         this.condition = condition;
     }
 
-    public Pageable getPageable() {
+    public static Pageable getPageable(String sort, Integer page, Integer limit) {
         String[] part = sort.split(":", 2);
         return (page == null || limit == null) ? null : PageRequest.of(page - 1, limit,
                                                                        Sort.by(Sort.Direction.fromString(part[1]),
                                                                                part[0]));
     }
 
-    public FindCondition getCondition() {
+    public FindCondition getFindCondition() {
         return new FindCondition(condition);
     }
 
