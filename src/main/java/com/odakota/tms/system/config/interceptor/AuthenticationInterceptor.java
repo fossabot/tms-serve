@@ -78,4 +78,37 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 //        }
         return true;
     }
+
+//    /**
+//     * Logging request
+//     *
+//     * @param request HttpServletRequest
+//     * @throws IOException IOException
+//     */
+//    private void logRequest(HttpServletRequest request) throws IOException {
+//        request.setAttribute("startTime", System.currentTimeMillis());
+//        log.info("-----------------------------------logging request-----------------------------------");
+//        log.info("URI           : {}", ClientUtils.getFullRequestUrl(request));
+//        log.info("Method        : {}", request.getMethod());
+//        log.info("Content Type  : {}", request.getContentType());
+//        log.info("User Agent    : {}", request.getHeader("User-Agent"));
+//        log.info("Remote Address: {}", ClientUtils.getIpAddress(request));
+//        log.info("Request param : {}", Collections.list(request.getParameterNames())
+//                                                  .stream().collect(Collectors.toMap(paramName -> paramName,
+//                                                                                     request::getParameterValues)));
+//        log.info("-------------------------------------------------------------------------------------");
+//    }
+//
+//    /**
+//     * Logging result of request
+//     *
+//     * @param request  HttpServletRequest
+//     * @param response HttpServletResponse
+//     */
+//    private void logResponse(HttpServletRequest request, HttpServletResponse response) {
+//        log.info("-----------------------------------logging response-----------------------------------");
+//        log.info("HttpStatus: {}", HttpStatus.valueOf(response.getStatus()));
+//        log.info("TakeTime  : {}ms", System.currentTimeMillis() - (long) request.getAttribute("startTime"));
+//        log.info("--------------------------------------------------------------------------------------");
+//    }
 }

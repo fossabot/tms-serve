@@ -2,20 +2,23 @@
 <Configuration status="WARN" monitorInterval="60">
     <Properties>
         <Property name="log-path">/logs/jp/tms/</Property>
-        <Property name="LOG_PATTERN">
+        <Property name="ERROR_LOG_PATTERN">
             %d{dd-MMMM-yy HH:mm:ss} [%thread] %-5level %logger{36} - Line %L - %M - %msg%n
+        </Property>
+        <Property name="DEBUG_LOG_PATTERN">
+            %d{dd-MMMM-yy HH:mm:ss} - %msg%n
         </Property>
     </Properties>
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <PatternLayout pattern="${ERROR_LOG_PATTERN}"/>
         </Console>
         <!--  Rolling File Appender Debug  -->
         <RollingFile name="FileAppenderDebug"
                      fileName="${log-path}tms_staff_debug.log"
                      filePattern="${log-path}tms_staff_debug-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
-                <Pattern>${LOG_PATTERN}</Pattern>
+                <Pattern>${DEBUG_LOG_PATTERN}</Pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
@@ -28,7 +31,7 @@
                      fileName="${log-path}tms_staff_error.log"
                      filePattern="${log-path}tms_staff_error-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
-                <Pattern>${LOG_PATTERN}</Pattern>
+                <Pattern>${ERROR_LOG_PATTERN}</Pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
@@ -38,13 +41,18 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="trace">
-            <AppenderRef ref="ConsoleAppender" level="debug"/>
-            <AppenderRef ref="FileAppenderDebug" level="trace"/>
+        <root level="info">
             <AppenderRef ref="FileAppenderError" level="error"/>
-        </Root>
-        <logger name="org.hibernate.SQL" level="debug"/>
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>
-        <logger name="org.springframework.scheduling.quartz.LocalDataSourceJobStore" level="error"/>
+            <AppenderRef ref="ConsoleAppender" level="debug"/>
+        </root>
+        <logger name="org.hibernate.SQL" level="debug">
+            <AppenderRef ref="FileAppenderDebug" level="debug"/>
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace">
+            <AppenderRef ref="FileAppenderDebug" level="trace"/>
+        </logger>
+        <logger name="com.odakota.tms.system.config.interceptor.LoggingFilter" level="info">
+            <AppenderRef ref="FileAppenderDebug" level="info"/>
+        </logger>
     </Loggers>
 </Configuration>
