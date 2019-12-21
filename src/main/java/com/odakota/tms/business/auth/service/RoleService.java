@@ -40,6 +40,7 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
      * @param resource resource
      * @return The created role is returned.
      */
+    @Override
     public RoleResource createResource(RoleResource resource) {
         // check duplicate roleCode
         if (roleRepository.isExistedResource(null, FieldConstant.ROLE_CODE, resource.getRoleCode())) {
@@ -53,6 +54,7 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
      *
      * @param id Resource identifier
      */
+    @Override
     public void deleteResource(Long id) {
         // check role default
         if (Constant.ROLE_ID_DEFAULT == id) {

@@ -33,6 +33,7 @@ public class WebSocket {
             webSockets.add(this);
             sessionPool.put(userId, session);
         } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 
@@ -41,15 +42,12 @@ public class WebSocket {
         try {
             webSockets.remove(this);
         } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 
     @OnMessage
     public void onMessage(String message) {
-//        JsonObject obj = new JsonObject();
-//        obj.addProperty("cmd", "heartcheck");//business type
-//        obj.addProperty("msgTxt", "Heartbeat response");//message content
-//        session.getAsyncRemote().sendText(obj.toString());
     }
 
     // this is a broadcast message
@@ -60,19 +58,19 @@ public class WebSocket {
                     webSocket.session.getAsyncRemote().sendText(message);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
     }
 
     // this is a single point message
     public void sendOneMessage(String userId, String message) {
-        Session session = sessionPool.get(userId);
-        if (session != null && session.isOpen()) {
+        Session ses = sessionPool.get(userId);
+        if (ses != null && ses.isOpen()) {
             try {
-                session.getAsyncRemote().sendText(message);
+                ses.getAsyncRemote().sendText(message);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
     }
@@ -80,12 +78,12 @@ public class WebSocket {
     // this is a single point message multiple
     public void sendMoreMessage(String[] userIds, String message) {
         for (String userId : userIds) {
-            Session session = sessionPool.get(userId);
-            if (session != null && session.isOpen()) {
+            Session ses = sessionPool.get(userId);
+            if (ses != null && ses.isOpen()) {
                 try {
-                    session.getAsyncRemote().sendText(message);
+                    ses.getAsyncRemote().sendText(message);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 }
             }
         }

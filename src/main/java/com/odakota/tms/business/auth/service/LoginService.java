@@ -4,6 +4,7 @@ import com.odakota.tms.business.auth.entity.Permission;
 import com.odakota.tms.business.auth.entity.User;
 import com.odakota.tms.business.auth.repository.UserRepository;
 import com.odakota.tms.business.auth.resource.LoginResource;
+import com.odakota.tms.business.auth.resource.LoginResponse;
 import com.odakota.tms.business.auth.resource.userpermission.Auth;
 import com.odakota.tms.business.auth.resource.userpermission.Menu;
 import com.odakota.tms.business.auth.resource.userpermission.PermissionMetaResource;
@@ -96,10 +97,10 @@ public class LoginService {
             throw new CustomException(MessageCode.MSG_ACCOUNT_DISABLED, HttpStatus.CONFLICT);
         }
         String token = tokenProvider.generateToken(user.getId(), user.getUsername());
-        loginResource = new LoginResource();
-        loginResource.setToken(token);
-        loginResource.setUserInfo(user);
-        return loginResource;
+        LoginResponse response = new LoginResponse();
+        response.setToken(token);
+        response.setUserInfo(user);
+        return response;
     }
 
     /**

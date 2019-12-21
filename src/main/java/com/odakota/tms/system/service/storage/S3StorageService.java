@@ -131,13 +131,13 @@ public class S3StorageService {
      */
     public List<StorageItem> listFiles(final StorageType type, final String path) {
         return this.list(type, path).stream()
-                   .filter((item) -> item.getType().equals(StorageItemType.FILE))
+                   .filter(tmp -> tmp.getType().equals(StorageItemType.FILE))
                    .collect(Collectors.toList());
     }
 
     public List<StorageItem> listDirectories(final StorageType type, final String path) {
         return this.list(type, path).stream()
-                   .filter((item) -> item.getType().equals(StorageItemType.FOLDER))
+                   .filter(tmp -> tmp.getType().equals(StorageItemType.FOLDER))
                    .collect(Collectors.toList());
     }
 
@@ -146,18 +146,19 @@ public class S3StorageService {
             S3Object object = amazonS3.getObject(getBucket(type), path);
             StorageItemMetadata metadata = convertToContetnsMetadata(object.getObjectMetadata());
             byte[] bytes;
-            try (InputStream is = object.getObjectContent(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                byte[] read_buf = new byte[1024];
-                int read_len;
-                while ((read_len = is.read(read_buf)) > 0) {
-                    baos.write(read_buf, 0, read_len);
-                }
-                bytes = baos.toByteArray();
-            } catch (IOException e) {
-                throw new CustomException(MessageCode.MSG_RUNTIME_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
+            InputStream is = object.getObjectContent();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] readBuf = new byte[1024];
+            int readLen;
+            while ((readLen = is.read(readBuf)) > 0) {
+                baos.write(readBuf, 0, readLen);
             }
+            bytes = baos.toByteArray();
+
             StorageItem storageItem = new StorageItem(StorageItemType.FILE, object.getKey(), metadata, bytes);
             return Optional.of(storageItem);
+        } catch (IOException e) {
+            throw new CustomException(MessageCode.MSG_RUNTIME_EXCEPTION, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (AmazonS3Exception e) {
             if (e.getErrorCode().equals(ERROR_CODE_NO_SUCH_KEY)) {
                 return Optional.empty();
@@ -191,22 +192,20 @@ public class S3StorageService {
     public void get(final StorageType type, final String path, final OutputStream output) {
         try {
             S3Object object = amazonS3.getObject(getBucket(type), path);
-            try (S3ObjectInputStream input = object.getObjectContent()) {
-                byte[] read_buf = new byte[1024];
-                int read_len;
-                while ((read_len = input.read(read_buf)) > 0) {
-                    output.write(read_buf, 0, read_len);
-                }
-            } catch (IOException e) {
-                throw new CustomException(MessageCode.MSG_DOWNLOAD_S3_FAIL, HttpStatus.INTERNAL_SERVER_ERROR);
+            S3ObjectInputStream input = object.getObjectContent();
+            byte[] readBuf = new byte[1024];
+            int readLen;
+            while ((readLen = input.read(readBuf)) > 0) {
+                output.write(readBuf, 0, readLen);
             }
+
         } catch (AmazonS3Exception e) {
             if (e.getErrorCode().equals(ERROR_CODE_NO_SUCH_KEY)) {
                 throw new CustomException(MessageCode.MSG_FILE_NOT_FOUND, HttpStatus.NOT_FOUND);
             } else {
                 throw new CustomException(MessageCode.MSG_DOWNLOAD_S3_FAIL, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } catch (SdkClientException e) {
+        } catch (IOException | SdkClientException e) {
             throw new CustomException(MessageCode.MSG_DOWNLOAD_S3_FAIL, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -244,9 +243,9 @@ public class S3StorageService {
     public void remove(final StorageType type, final String path) {
         try {
             getS3Object(type, path)
-                    .map((object) -> {
-                        amazonS3.deleteObject(getBucket(type), object.getKey());
-                        return object;
+                    .map(tmp -> {
+                        amazonS3.deleteObject(getBucket(type), tmp.getKey());
+                        return tmp;
                     })
                     .orElseThrow(() -> new CustomException(MessageCode.MSG_FILE_NOT_FOUND, HttpStatus.NOT_FOUND));
         } catch (SdkClientException e) {
@@ -254,7 +253,7 @@ public class S3StorageService {
         }
     }
 
-    private Optional<S3Object> getS3Object(final StorageType type, final String path) throws SdkClientException {
+    private Optional<S3Object> getS3Object(final StorageType type, final String path) {
         // try to get as file
         try {
             S3Object object = amazonS3.getObject(getBucket(type), path);

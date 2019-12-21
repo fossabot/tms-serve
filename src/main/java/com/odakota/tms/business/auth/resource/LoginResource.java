@@ -1,6 +1,5 @@
 package com.odakota.tms.business.auth.resource;
 
-import com.odakota.tms.business.auth.entity.User;
 import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.annotations.groups.OnCreate;
 import com.odakota.tms.system.annotations.groups.OnUpdate;
@@ -30,8 +29,4 @@ public class LoginResource {
 
     @NotBlank(message = MessageCode.MSG_REQUIRED, groups = OnUpdate.class)
     private String phone;
-
-    private String token;
-
-    private User userInfo;
 }

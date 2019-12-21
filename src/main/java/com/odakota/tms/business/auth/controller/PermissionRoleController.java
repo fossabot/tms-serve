@@ -50,13 +50,4 @@ public class PermissionRoleController extends BaseController<PermissionRole, Per
         permissionRoleService.saveRolePermissions(resource);
         return ResponseEntity.ok(new ResponseData<>());
     }
-
-//    @RequiredAuthentication
-//    @RequestMapping(value = "/getSystemMenuList", method = RequestMethod.GET)
-//    public ResponseEntity<?> getSystemMenuList() {
-//        return ResponseEntity.ok(new ResponseData<>().success(
-//                permissionRepository.findByDeletedFlagFalseAndMenuType(0)
-//                                    .stream().map(authMapper::convertToResource)
-//                                    .collect(Collectors.toList())));
-//    }
 }

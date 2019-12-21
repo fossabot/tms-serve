@@ -1,25 +1,35 @@
 package com.odakota.tms.system.config.interceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.annotations.NoAuthentication;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.config.exception.UnAuthorizedException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * @author haidv
  * @version 1.0
  */
+@Slf4j
 @Component
 public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
@@ -33,6 +43,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        logRequest(request);
         // reject if not accept header
         if (StringUtils.isEmpty(request.getHeader("Accept"))) {
             throw new HttpMediaTypeNotAcceptableException("");
@@ -53,6 +64,12 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         }
         // If request doesn't match with any handle method, it will be reject
         throw new UnAuthorizedException(MessageCode.MSG_CODE_NOT_USE, HttpStatus.FORBIDDEN);
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                @Nullable Exception ex) throws IOException {
+        logResponse(response);
     }
 
     private boolean validatePrivateApi(Method method, String token) throws UnAuthorizedException {
@@ -79,36 +96,58 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-//    /**
-//     * Logging request
-//     *
-//     * @param request HttpServletRequest
-//     * @throws IOException IOException
-//     */
-//    private void logRequest(HttpServletRequest request) throws IOException {
-//        request.setAttribute("startTime", System.currentTimeMillis());
-//        log.info("-----------------------------------logging request-----------------------------------");
-//        log.info("URI           : {}", ClientUtils.getFullRequestUrl(request));
-//        log.info("Method        : {}", request.getMethod());
-//        log.info("Content Type  : {}", request.getContentType());
-//        log.info("User Agent    : {}", request.getHeader("User-Agent"));
-//        log.info("Remote Address: {}", ClientUtils.getIpAddress(request));
-//        log.info("Request param : {}", Collections.list(request.getParameterNames())
-//                                                  .stream().collect(Collectors.toMap(paramName -> paramName,
-//                                                                                     request::getParameterValues)));
-//        log.info("-------------------------------------------------------------------------------------");
-//    }
-//
-//    /**
-//     * Logging result of request
-//     *
-//     * @param request  HttpServletRequest
-//     * @param response HttpServletResponse
-//     */
-//    private void logResponse(HttpServletRequest request, HttpServletResponse response) {
-//        log.info("-----------------------------------logging response-----------------------------------");
-//        log.info("HttpStatus: {}", HttpStatus.valueOf(response.getStatus()));
-//        log.info("TakeTime  : {}ms", System.currentTimeMillis() - (long) request.getAttribute("startTime"));
-//        log.info("--------------------------------------------------------------------------------------");
-//    }
+    /**
+     * Logging request
+     *
+     * @param request HttpServletRequest
+     */
+    private void logRequest(HttpServletRequest request) {
+        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
+        String requestId = UUID.randomUUID().toString();
+        ThreadContext.put(FieldConstant.REQUEST_ID, requestId);
+        ThreadContext.put("startTime", String.valueOf(System.currentTimeMillis()));
+        log.info("-----------------------------------logging request-----------------------------------");
+        log.info("RequestId      : {}", requestId);
+        log.info("URI            : {}", requestWrapper.getRequestURI());
+        log.info("Method         : {}", request.getMethod());
+        log.info("Request Headers: {}", new ObjectMapper().valueToTree(getRequestHeaders(requestWrapper)));
+        log.info("Remote Address : {}", requestWrapper.getRemoteAddr());
+        log.info("-------------------------------------------------------------------------------------");
+    }
+
+    /**
+     * Logging result of request
+     *
+     * @param response HttpServletResponse
+     */
+    private void logResponse(HttpServletResponse response) {
+        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+        log.info("-----------------------------------logging response-----------------------------------");
+        log.info("RequestId       : {}", ThreadContext.get(FieldConstant.REQUEST_ID));
+        log.info("HttpStatus      : {}", responseWrapper.getStatus());
+        log.info("Response Headers: {}", new ObjectMapper().valueToTree(getResponseHeaders(responseWrapper)));
+        log.info("TakeTime        : {}ms", System.currentTimeMillis() - Long.parseLong(ThreadContext.get("startTime")));
+        log.info("--------------------------------------------------------------------------------------");
+        ThreadContext.remove(FieldConstant.REQUEST_ID);
+    }
+
+    private Object getRequestHeaders(HttpServletRequest request) {
+        Map<String, Object> headers = new HashMap<>();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            headers.put(headerName, request.getHeader(headerName));
+        }
+        return headers;
+
+    }
+
+    private Map<String, Object> getResponseHeaders(ContentCachingResponseWrapper response) {
+        Map<String, Object> headers = new HashMap<>();
+        Collection<String> headerNames = response.getHeaderNames();
+        for (String headerName : headerNames) {
+            headers.put(headerName, response.getHeader(headerName));
+        }
+        return headers;
+    }
 }

@@ -1,5 +1,6 @@
 package com.odakota.tms.system.config;
 
+import com.odakota.tms.constant.FieldConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -30,7 +31,9 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo())
-                .securitySchemes(Collections.singletonList(new ApiKey("Authorization", "Authorization", "Header")));
+                .securitySchemes(
+                        Collections.singletonList(new ApiKey(FieldConstant.API_KEY, "Authorization", "Header")))
+                .useDefaultResponseMessages(false);
     }
 
     private ApiInfo apiInfo() {

@@ -6,6 +6,8 @@ package com.odakota.tms.constant;
  */
 public class FieldConstant {
 
+    public static final String REQUEST_ID = "requestId";
+    public static final String API_KEY = "apiKey";
     // ROLE FIELD NAME
     public static final String ROLE_CODE = "roleCode";
     // DIVISION FIELD NAME

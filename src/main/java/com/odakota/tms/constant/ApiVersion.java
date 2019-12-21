@@ -6,5 +6,7 @@ package com.odakota.tms.constant;
  */
 public class ApiVersion {
 
+    private ApiVersion(){}
+
     public static final String API_VERSION_1 = "application/vnd.normalized.v1+json";
 }
