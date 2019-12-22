@@ -43,7 +43,7 @@ public class PermissionService extends BaseService<Permission, PermissionResourc
     public Map<String, Object> getPermissions() {
         // all permissions ids
         List<Long> ids = new ArrayList<>();
-        List<Permission> list = permissionRepository.findByDeletedFlagFalseOrderBySortNoAsc();
+        List<Permission> list = permissionRepository.findByDeletedFlagFalseOrderByIdAscSortNoAsc();
         for (Permission sysPer : list) {
             ids.add(sysPer.getId());
         }
