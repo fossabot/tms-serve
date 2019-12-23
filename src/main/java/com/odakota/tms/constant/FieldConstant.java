@@ -13,10 +13,9 @@ public class FieldConstant {
     // DIVISION FIELD NAME
     public static final String DIVISION_NAME = "name";
     // USER FIELD NAME
-    public static final String USER_IDENTITY_CARD = "identityCard";
-    public static final String USER_PASSPORT = "passport";
-    public static final String USER_DIVISION_ID = "divisionId";
-    public static final String USER_FULL_NAME = "fullName";
+    public static final String USER_EMAIL = "email";
+    public static final String USER_NAME = "username";
+    public static final String USER_PHONE = "phone";
     // ACCOUNT FIELD NAME
     public static final String ACCOUNT_USER_NAME = "userName";
     public static final String ACCOUNT_PASS = "password";

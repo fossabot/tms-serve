@@ -50,6 +50,21 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
     }
 
     /**
+     * Update resources.
+     *
+     * @param id       Resource identifier
+     * @param resource resource
+     * @return The updated resource is returned.
+     */
+    @Override protected RoleResource updateResource(Long id, RoleResource resource) {
+        // check role default
+        if (Constant.ROLE_ID_DEFAULT == id) {
+            throw new CustomException(MessageCode.MSG_ROLE_NOT_UPDATED, HttpStatus.BAD_REQUEST);
+        }
+        return super.updateResource(id, resource);
+    }
+
+    /**
      * Delete role by id.
      *
      * @param id Resource identifier

@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author haidv
@@ -47,9 +48,9 @@ public class RoleController extends BaseController<Role, RoleResource> {
     }
 
     /**
-     * API get role
+     * API get role by id
      *
-     * @param id Resource identifier (long)
+     * @param id role id
      * @return {@link ResponseEntity}
      */
     @RequiredAuthentication(value = ApiId.R_ROLE)
@@ -61,7 +62,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
     /**
      * API create new role
      *
-     * @param resource resource
+     * @param resource {@link RoleResource}
      * @return {@link ResponseEntity}
      */
     @RequiredAuthentication(value = ApiId.C_ROLE)
@@ -73,8 +74,8 @@ public class RoleController extends BaseController<Role, RoleResource> {
     /**
      * API update role
      *
-     * @param id       Resource identifier
-     * @param resource resource
+     * @param id       role id
+     * @param resource {@link RoleResource}
      * @return {@link ResponseEntity}
      */
     @RequiredAuthentication(value = ApiId.U_ROLE)
@@ -86,12 +87,24 @@ public class RoleController extends BaseController<Role, RoleResource> {
     /**
      * API delete role
      *
-     * @param id Resource identifier
+     * @param id role id
      * @return {@link ResponseEntity}
      */
     @RequiredAuthentication(value = ApiId.D_ROLE)
     @DeleteMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         return super.deleteResource(id);
+    }
+
+    /**
+     * API batch delete role
+     *
+     * @param ids list role id
+     * @return {@link ResponseEntity}
+     */
+    @RequiredAuthentication(value = ApiId.D_ROLE)
+    @DeleteMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
+    public ResponseEntity<Void> batchDeleteRole(@RequestParam List<Long> ids) {
+        return super.batchDeleteResource(ids);
     }
 }

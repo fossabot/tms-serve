@@ -6,6 +6,7 @@ import com.odakota.tms.system.config.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -95,6 +96,16 @@ public abstract class BaseService<E extends BaseEntity, R extends BaseResource<E
      */
     public void deleteResource(Long id) {
         repository.deleteById(id);
+    }
+
+    /**
+     * Specify a resource identifier and delete the resource.
+     *
+     * @param ids list resource identifier
+     */
+    @Transactional
+    public void deleteResource(List<Long> ids) {
+        ids.forEach(this::deleteResource);
     }
 
     /**
