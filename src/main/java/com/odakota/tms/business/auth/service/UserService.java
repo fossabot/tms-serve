@@ -71,7 +71,7 @@ public class UserService extends BaseService<User, UserResource, UserCondition> 
      */
     @Override
     protected UserResource updateResource(Long id, UserResource resource) {
-        // check role default
+        // check user default
         if (Constant.USER_ID_DEFAULT == id) {
             throw new CustomException(MessageCode.MSG_USER_NOT_UPDATED, HttpStatus.BAD_REQUEST);
         }

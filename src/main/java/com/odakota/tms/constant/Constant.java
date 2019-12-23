@@ -9,6 +9,7 @@ public class Constant {
     // DEFAULT VALUE
     public static final int ROLE_ID_DEFAULT = 1;
     public static final int USER_ID_DEFAULT = 1;
+    public static final int BRANCH_ID_DEFAULT = 1;
     public static final int NUMBER_OF_ROLE_DEFAULT = 2;
     public static final int NUMBER_OF_ACCOUNT_DEFAULT = 2;
     public static final String IMAGE_PATH_DEFAULT = "/avatar/default.jpg";

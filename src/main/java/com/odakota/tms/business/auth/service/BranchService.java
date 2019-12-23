@@ -1,10 +1,10 @@
 package com.odakota.tms.business.auth.service;
 
-import com.odakota.tms.business.auth.entity.Role;
+import com.odakota.tms.business.auth.entity.Branch;
 import com.odakota.tms.business.auth.mapper.AuthMapper;
-import com.odakota.tms.business.auth.repository.RoleRepository;
-import com.odakota.tms.business.auth.resource.RoleResource;
-import com.odakota.tms.business.auth.resource.RoleResource.RoleCondition;
+import com.odakota.tms.business.auth.repository.BranchRepository;
+import com.odakota.tms.business.auth.resource.BranchResource;
+import com.odakota.tms.business.auth.resource.BranchResource.BranchCondition;
 import com.odakota.tms.constant.Constant;
 import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.constant.MessageCode;
@@ -21,30 +21,30 @@ import org.springframework.stereotype.Service;
  * @version 1.0
  */
 @Service
-public class RoleService extends BaseService<Role, RoleResource, RoleCondition> {
+public class BranchService extends BaseService<Branch, BranchResource, BranchCondition> {
 
-    private final RoleRepository roleRepository;
+    private final BranchRepository branchRepository;
 
     private AuthMapper mapper = Mappers.getMapper(AuthMapper.class);
 
     @Autowired
-    public RoleService(RoleRepository roleRepository) {
-        super(roleRepository);
-        this.roleRepository = roleRepository;
+    public BranchService(BranchRepository branchRepository) {
+        super(branchRepository);
+        this.branchRepository = branchRepository;
     }
 
 
     /**
-     * Create a new role.
+     * Create a new branch.
      *
      * @param resource resource
-     * @return The created role is returned.
+     * @return The created branch is returned.
      */
     @Override
-    public RoleResource createResource(RoleResource resource) {
-        // check duplicate roleCode
-        if (roleRepository.isExistedResource(null, FieldConstant.ROLE_CODE, resource.getRoleCode())) {
-            throw new CustomException(MessageCode.MSG_ROLE_CODE_EXISTED, HttpStatus.CONFLICT);
+    public BranchResource createResource(BranchResource resource) {
+        // check duplicate branchCode
+        if (branchRepository.isExistedResource(null, FieldConstant.BRANCH_CODE, resource.getBranchCode())) {
+            throw new CustomException(MessageCode.MSG_BRANCH_CODE_EXISTED, HttpStatus.CONFLICT);
         }
         return super.createResource(resource);
     }
@@ -57,24 +57,24 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
      * @return The updated resource is returned.
      */
     @Override
-    protected RoleResource updateResource(Long id, RoleResource resource) {
-        // check role default
-        if (Constant.ROLE_ID_DEFAULT == id) {
-            throw new CustomException(MessageCode.MSG_ROLE_NOT_UPDATED, HttpStatus.BAD_REQUEST);
+    protected BranchResource updateResource(Long id, BranchResource resource) {
+        // check branch default
+        if (Constant.BRANCH_ID_DEFAULT == id) {
+            throw new CustomException(MessageCode.MSG_BRANCH_NOT_UPDATED, HttpStatus.BAD_REQUEST);
         }
         return super.updateResource(id, resource);
     }
 
     /**
-     * Delete role by id.
+     * Delete branch by id.
      *
      * @param id Resource identifier
      */
     @Override
     public void deleteResource(Long id) {
-        // check role default
-        if (Constant.ROLE_ID_DEFAULT == id) {
-            throw new CustomException(MessageCode.MSG_ROLE_NOT_DELETED, HttpStatus.BAD_REQUEST);
+        // check branch default
+        if (Constant.BRANCH_ID_DEFAULT == id) {
+            throw new CustomException(MessageCode.MSG_BRANCH_NOT_DELETED, HttpStatus.BAD_REQUEST);
         }
         super.deleteResource(id);
     }
@@ -86,7 +86,7 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
      * @return resource
      */
     @Override
-    protected RoleResource convertToResource(Role entity) {
+    protected BranchResource convertToResource(Branch entity) {
         return mapper.convertToResource(entity);
     }
 
@@ -98,8 +98,8 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
      * @return entity
      */
     @Override
-    protected Role convertToEntity(Long id, RoleResource resource) {
-        Role entity = mapper.convertToEntity(resource);
+    protected Branch convertToEntity(Long id, BranchResource resource) {
+        Branch entity = mapper.convertToEntity(resource);
         entity.setId(id);
         return entity;
     }
@@ -111,8 +111,8 @@ public class RoleService extends BaseService<Role, RoleResource, RoleCondition> 
      * @return condition
      */
     @Override
-    protected RoleCondition getCondition(FindCondition condition) {
-        RoleCondition roleCondition = condition.get(RoleCondition.class);
-        return roleCondition != null ? roleCondition : new RoleCondition();
+    protected BranchCondition getCondition(FindCondition condition) {
+        BranchCondition roleCondition = condition.get(BranchCondition.class);
+        return roleCondition != null ? roleCondition : new BranchCondition();
     }
 }

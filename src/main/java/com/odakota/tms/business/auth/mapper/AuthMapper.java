@@ -1,8 +1,10 @@
 package com.odakota.tms.business.auth.mapper;
 
+import com.odakota.tms.business.auth.entity.Branch;
 import com.odakota.tms.business.auth.entity.Permission;
 import com.odakota.tms.business.auth.entity.Role;
 import com.odakota.tms.business.auth.entity.User;
+import com.odakota.tms.business.auth.resource.BranchResource;
 import com.odakota.tms.business.auth.resource.PermissionResource;
 import com.odakota.tms.business.auth.resource.RoleResource;
 import com.odakota.tms.business.auth.resource.UserResource;
@@ -22,6 +24,10 @@ public interface AuthMapper {
     RoleResource convertToResource(Role entity);
 
     Role convertToEntity(RoleResource resource);
+
+    BranchResource convertToResource(Branch entity);
+
+    Branch convertToEntity(BranchResource resource);
 
     @Mapping(source = "sex", target = "sex", qualifiedByName = "getValueSex")
     UserResource convertToResource(User entity);
