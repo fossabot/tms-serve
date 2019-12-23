@@ -11,7 +11,7 @@ public class FieldConstant {
     // ROLE FIELD NAME
     public static final String ROLE_CODE = "roleCode";
     // DIVISION FIELD NAME
-    public static final String DIVISION_NAME = "name";
+    public static final String BRANCH_CODE = "branchCode";
     // USER FIELD NAME
     public static final String USER_EMAIL = "email";
     public static final String USER_NAME = "username";
