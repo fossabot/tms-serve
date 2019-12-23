@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * This is the base class for controller classes of applications. <br> The controller provides the function to call
  * various methods of the service through HTTP protocol. This class provides an implementation of the APIs (List, Get,
@@ -77,6 +79,17 @@ public abstract class BaseController<E extends BaseEntity, R extends BaseResourc
      */
     public ResponseEntity<Void> deleteResource(Long id) {
         service.deleteResource(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Resource deletion API
+     *
+     * @param ids list resource identifier
+     * @return {@link ResponseEntity}
+     */
+    public ResponseEntity<Void> batchDeleteResource(List<Long> ids) {
+        service.deleteResource(ids);
         return ResponseEntity.noContent().build();
     }
 }

@@ -91,7 +91,7 @@ public interface BaseRepository<E extends BaseEntity, C extends BaseCondition> e
      * @param fieldValue column value
      * @return boolean
      */
-    default boolean isExistedResource(Integer id, String fieldName, String fieldValue) {
+    default boolean isExistedResource(Long id, String fieldName, String fieldValue) {
         Specification<E> specification = new BaseSpecification<>(fieldName, fieldValue, Constant.OPERATION_EQUAL);
         specification = specification.and(new BaseSpecification<>(FieldConstant.DELETED_FLAG, false,
                                                                   Constant.OPERATION_EQUAL));

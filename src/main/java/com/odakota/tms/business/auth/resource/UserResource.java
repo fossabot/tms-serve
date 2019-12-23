@@ -55,6 +55,12 @@ public class UserResource extends BaseResource<User> {
     @AllArgsConstructor
     public static class UserCondition extends BaseCondition {
 
-        private String userName;
+        private String username;
+
+        private String email;
+
+        private String phone;
+
+        private Boolean disableFlag;
     }
 }

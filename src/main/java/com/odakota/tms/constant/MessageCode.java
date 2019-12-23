@@ -36,14 +36,16 @@ public class MessageCode {
     public static final String MSG_NOT_MATCHED = "ng.general.not-matched";
     // Business error code
     public static final String MSG_RESOURCE_NOT_EXIST = "resource.not.exist";
-    public static final String MSG_RESOURCE_NOT_EXIST_BY_ID = "resource.not.exist.by.id";
     public static final String MSG_INVALID_USERNAME_PASS = "invalid.username.password";
     public static final String MSG_ACCOUNT_DISABLED = "account.disabled";
-    public static final String MSG_DIVISION_NOT_DELETED = "division.not.deleted";
-    public static final String MSG_USER_NOT_DELETED = "user.not.deleted";
-    public static final String MSG_END_DATE_LESS_THAN = "contract.end.date.less.than.start.date";
+    public static final String MSG_USER_NOT_DELETED = "user.not-deleted";
+    public static final String MSG_USER_NOT_UPDATED = "user.not-updated";
+    public static final String MSG_PHONE_EXISTED = "phone.existed";
+    public static final String MSG_EMAIL_EXISTED = "email.existed";
+    public static final String MSG_USER_NAME_EXISTED = "username.existed";
     public static final String MSG_ROLE_CODE_EXISTED = "role-code.existed";
     public static final String MSG_ROLE_NOT_DELETED = "role.not-deleted";
+    public static final String MSG_ROLE_NOT_UPDATED = "role.not-updated";
     public static final String MSG_CAPTCHA_EXPIRED = "captcha.expired";
     public static final String MSG_CAPTCHA_INVALID = "captcha.invalid";
     public static final String MSG_DOWNLOAD_S3_FAIL = "download.s3.fail";
