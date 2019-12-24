@@ -22,7 +22,9 @@ public class Constant {
     public static final String OPERATION_LIKE = "like";
     // TOKEN
     public static final String TOKEN_CLAIM_USER_ID = "userId";
+    public static final String TOKEN_CLAIM_ROLE_ID = "roleIds";
     public static final String TOKEN_CLAIM_USER_NAME = "username";
+    public static final String TOKEN_CLAIM_JTI = "jti";
     // DATETIME FORMAT
     public static final String YYYY_MM_DD = "yyyy-MM-dd";
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";

@@ -55,6 +55,7 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.R_BRANCH)
     @GetMapping(value = "/branches/{id}", produces = ApiVersion.API_VERSION_1)
+    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getBranch(@PathVariable Long id) {
         return super.getResource(id);
     }
@@ -67,6 +68,7 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.C_BRANCH)
     @PostMapping(value = "/branches", produces = ApiVersion.API_VERSION_1)
+    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> createBranch(@Validated @RequestBody BranchResource resource) {
         return super.createResource(resource);
     }
@@ -80,6 +82,7 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.U_BRANCH)
     @PutMapping(value = "/branches/{id}", produces = ApiVersion.API_VERSION_1)
+    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> updateBranch(@PathVariable Long id, @RequestBody BranchResource resource) {
         return super.updateResource(id, resource);
     }
@@ -92,6 +95,7 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.D_BRANCH)
     @DeleteMapping(value = "/branches/{id}", produces = ApiVersion.API_VERSION_1)
+    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<Void> deleteBranch(@PathVariable Long id) {
         return super.deleteResource(id);
     }
@@ -104,6 +108,7 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.D_BRANCH)
     @DeleteMapping(value = "/branches", produces = ApiVersion.API_VERSION_1)
+    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<Void> batchDeleteBranch(@RequestParam List<Long> ids) {
         return super.batchDeleteResource(ids);
     }

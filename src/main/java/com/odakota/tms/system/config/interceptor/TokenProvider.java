@@ -6,13 +6,17 @@ import com.odakota.tms.system.config.UserSession;
 import com.odakota.tms.system.config.exception.UnAuthorizedException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author haidv
@@ -23,12 +27,16 @@ import java.util.Date;
 public class TokenProvider {
 
     private final UserSession userSession;
+
     @Value("${auth.token.secret-key}")
     private String secretKey;
+
     @Value("#{new Integer('${auth.token.expiration-time}')}")
     private int tokenExpiration;
+
     @Value("${auth.token.subject}")
     private String subject;
+
     @Value("${auth.token.issuer}")
     private String issuer;
 
@@ -37,7 +45,7 @@ public class TokenProvider {
         this.userSession = userSession;
     }
 
-    public String generateToken(Long userId, String username) {
+    public String generateToken(Long userId, String username, List<Long> roleIds, String tokenId) {
         return Jwts.builder()
                    .setSubject(subject)
                    .setIssuer(issuer)
@@ -45,6 +53,8 @@ public class TokenProvider {
                    .signWith(SignatureAlgorithm.HS512, secretKey)
                    .claim(Constant.TOKEN_CLAIM_USER_ID, userId)
                    .claim(Constant.TOKEN_CLAIM_USER_NAME, username)
+                   .claim(Constant.TOKEN_CLAIM_ROLE_ID, StringUtils.join(roleIds, ","))
+                   .claim(Constant.TOKEN_CLAIM_JTI, tokenId)
                    .compact();
     }
 
@@ -59,6 +69,10 @@ public class TokenProvider {
             Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
             userSession.setUserId(Long.parseLong(claims.get(Constant.TOKEN_CLAIM_USER_ID).toString()));
             userSession.setUsername(claims.get(Constant.TOKEN_CLAIM_USER_NAME).toString());
+            userSession.setRoleIds(Arrays.stream(claims.get(Constant.TOKEN_CLAIM_ROLE_ID).toString().split(",")).map(
+                    Long::parseLong).collect(
+                    Collectors.toList()));
+            userSession.setTokenId(claims.get(Constant.TOKEN_CLAIM_JTI).toString());
         } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException | SignatureException ex) {
             throw new UnAuthorizedException(MessageCode.MSG_TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
         } catch (ExpiredJwtException ex) {

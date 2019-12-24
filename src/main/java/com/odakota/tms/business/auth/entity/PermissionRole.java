@@ -24,4 +24,7 @@ public class PermissionRole extends BaseEntity {
 
     @Column(name = "permission_id")
     private Long permissionId;
+
+    @Column(name = "api_id")
+    private String apiId;
 }

@@ -1,10 +1,14 @@
 package com.odakota.tms.system.config.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.odakota.tms.business.auth.repository.AccessTokenRepository;
+import com.odakota.tms.business.auth.repository.PermissionRoleRepository;
 import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.constant.MessageCode;
+import com.odakota.tms.enums.ApiId;
 import com.odakota.tms.system.annotations.NoAuthentication;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
+import com.odakota.tms.system.config.UserSession;
 import com.odakota.tms.system.config.exception.UnAuthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +25,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -35,9 +39,20 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
     private final TokenProvider tokenProvider;
 
+    private final UserSession userSession;
+
+    private final AccessTokenRepository accessTokenRepository;
+
+    private final PermissionRoleRepository permissionRoleRepository;
+
     @Autowired
-    public AuthenticationInterceptor(TokenProvider tokenProvider) {
+    public AuthenticationInterceptor(TokenProvider tokenProvider, UserSession userSession,
+                                     AccessTokenRepository accessTokenRepository,
+                                     PermissionRoleRepository permissionRoleRepository) {
         this.tokenProvider = tokenProvider;
+        this.userSession = userSession;
+        this.accessTokenRepository = accessTokenRepository;
+        this.permissionRoleRepository = permissionRoleRepository;
     }
 
     @Override
@@ -68,31 +83,31 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
-                                @Nullable Exception ex) throws IOException {
+                                @Nullable Exception ex) {
         logResponse(response);
     }
 
     private boolean validatePrivateApi(Method method, String token) throws UnAuthorizedException {
 
-//        // check token exist in db
-//        if (!tokenService.existsByToken(token)) {
-//            throw new UnAuthorizedException(getMessage(MessageCode.MSG_TOKEN_NOT_EXISTED), HttpStatus.UNAUTHORIZED);
-//        }
         // parse info of token to user session
         tokenProvider.parseTokenInfoToUserSession(token);
-//        for (Annotation annotation : method.getDeclaredAnnotations()) {
-//            if (annotation instanceof RequiredAuthentication) {
-//                ApiId apiId = ((RequiredAuthentication) annotation).value();
-//                if (ApiId.DEFAULT.getValue().equals(apiId.getValue())) {
-//                    return true;
-//                }
-//                // Check request has permission
-//                if (!permissionRoleService.checkPermissionOfApi(apiId, userSession.getRoleId())) {
-//                    throw new UnAuthorizedException(getMessage(MessageCode.MSG_ACCESS_DENIED), HttpStatus.FORBIDDEN);
-//                }
-//                return true;
-//            }
-//        }
+        // check token exist in db
+        if (!accessTokenRepository.existsByJti(userSession.getTokenId())) {
+            throw new UnAuthorizedException(MessageCode.MSG_TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
+        }
+        for (Annotation annotation : method.getDeclaredAnnotations()) {
+            if (annotation instanceof RequiredAuthentication) {
+                ApiId apiId = ((RequiredAuthentication) annotation).value();
+                if (ApiId.DEFAULT.getValue().equals(apiId.getValue())) {
+                    return true;
+                }
+                // Check request has permission
+                if (!permissionRoleRepository.existsByApiIdAndRoleIdIn(apiId.getValue(), userSession.getRoleIds())) {
+                    throw new UnAuthorizedException(MessageCode.MSG_ACCESS_DENIED, HttpStatus.FORBIDDEN);
+                }
+                return true;
+            }
+        }
         return true;
     }
 
