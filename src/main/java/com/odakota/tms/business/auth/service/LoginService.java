@@ -1,7 +1,9 @@
 package com.odakota.tms.business.auth.service;
 
+import com.odakota.tms.business.auth.entity.AccessToken;
 import com.odakota.tms.business.auth.entity.Permission;
 import com.odakota.tms.business.auth.entity.User;
+import com.odakota.tms.business.auth.repository.AccessTokenRepository;
 import com.odakota.tms.business.auth.repository.UserRepository;
 import com.odakota.tms.business.auth.resource.LoginResource;
 import com.odakota.tms.business.auth.resource.LoginResponse;
@@ -43,19 +45,27 @@ public class LoginService {
 
     private final OtpGenerator otpGenerator;
 
+    private final UserRoleService userRoleService;
+
+    private final AccessTokenRepository accessTokenRepository;
+
     private final UserSession userSession;
 
     private final SmsService smsService;
 
     @Autowired
     public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, TokenProvider tokenProvider,
-                        PermissionService permissionService, OtpGenerator otpGenerator, UserSession userSession,
-                        SmsService smsService) {
+                        PermissionService permissionService, OtpGenerator otpGenerator,
+                        UserRoleService userRoleService,
+                        AccessTokenRepository accessTokenRepository,
+                        UserSession userSession, SmsService smsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
         this.permissionService = permissionService;
         this.otpGenerator = otpGenerator;
+        this.userRoleService = userRoleService;
+        this.accessTokenRepository = accessTokenRepository;
         this.userSession = userSession;
         this.smsService = smsService;
     }
@@ -96,11 +106,28 @@ public class LoginService {
         if (user.isDisableFlag()) {
             throw new CustomException(MessageCode.MSG_ACCOUNT_DISABLED, HttpStatus.CONFLICT);
         }
-        String token = tokenProvider.generateToken(user.getId(), user.getUsername());
+        // get list role id
+        List<Long> roleIds = userRoleService.getUserRoleIds(user.getId());
+        String jti = UUID.randomUUID().toString();
+        // save information to access token
+        AccessToken accessToken = new AccessToken();
+        accessToken.setJti(jti);
+        accessToken.setCreateDate(new Date());
+        accessTokenRepository.save(accessToken);
+        // generate token
+        String token = tokenProvider.generateToken(user.getId(), user.getUsername(), roleIds, jti);
         LoginResponse response = new LoginResponse();
         response.setToken(token);
         response.setUserInfo(user);
         return response;
+    }
+
+
+    /**
+     * logout
+     */
+    public void logout() {
+        accessTokenRepository.deleteAccessTokenByJti(userSession.getTokenId());
     }
 
     /**

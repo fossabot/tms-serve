@@ -9,41 +9,28 @@ import lombok.Setter;
  */
 public enum ApiId {
 
-    DEFAULT(-1, "Default"),
-    C_ROLE(1, "Create role"),
-    R_ROLE(2, "Read role"),
-    U_ROLE(3, "Update role"),
-    D_ROLE(4, "Delete role"),
-    C_USER(9, "Create user"),
-    R_USER(10, "Read user"),
-    U_USER(11, "Update user"),
-    D_USER(12, "Delete user"),
-    C_BRANCH(13, "Create division"),
-    R_BRANCH(14, "Read division"),
-    U_BRANCH(15, "Update division"),
-    D_BRANCH(16, "Delete division"),
-    C_WORK(17, "Create work"),
-    R_WORK(18, "Read work"),
-    U_WORK(19, "Update work"),
-    C_IMPORT_FILE(20, "Import file"),
-    R_IMPORT_FILE(21, "Read list import file"),
-    C_CONTRACT(22, "Create contract"),
-    R_CONTRACT(23, "Read contract"),
-    U_CONTRACT(24, "Update contract"),
-    D_CONTRACT(25, "Delete contract");
+    DEFAULT("Default"),
+    C_ROLE("role:create"),
+    R_ROLE("role:read"),
+    U_ROLE("role:update"),
+    D_ROLE("role:delete"),
+    C_USER("user:create"),
+    R_USER("user:read"),
+    U_USER("user:update"),
+    D_USER("user:delete"),
+    C_BRANCH("branch:create"),
+    R_BRANCH("branch:read"),
+    U_BRANCH("branch:update"),
+    D_BRANCH("branch:delete");
 
     @Setter @Getter
-    private Integer value;
+    private String value;
 
-    @Setter @Getter
-    private String label;
-
-    ApiId(Integer value, String label) {
+    ApiId(String value) {
         this.value = value;
-        this.label = label;
     }
 
-    public static ApiId of(Integer value) {
+    public static ApiId of(String value) {
         for (ApiId apiId : ApiId.values()) {
             if (apiId.getValue().equals(value)) {
                 return apiId;
