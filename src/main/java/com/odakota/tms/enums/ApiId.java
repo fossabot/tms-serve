@@ -14,14 +14,20 @@ public enum ApiId {
     R_ROLE("role:read"),
     U_ROLE("role:update"),
     D_ROLE("role:delete"),
+    E_ROLE("role:export"),
+    I_ROLE("role:import"),
     C_USER("user:create"),
     R_USER("user:read"),
     U_USER("user:update"),
     D_USER("user:delete"),
+    E_USER("user:export"),
+    I_USER("user:import"),
     C_BRANCH("branch:create"),
     R_BRANCH("branch:read"),
     U_BRANCH("branch:update"),
-    D_BRANCH("branch:delete");
+    D_BRANCH("branch:delete"),
+    E_BRANCH("branch:export"),
+    I_BRANCH("branch:import"),;
 
     @Setter @Getter
     private String value;

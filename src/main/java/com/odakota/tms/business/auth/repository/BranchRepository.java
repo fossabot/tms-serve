@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author haidv
  * @version 1.0
@@ -20,4 +22,6 @@ public interface BranchRepository extends BaseRepository<Branch, BranchCondition
            "where b.deletedFlag = false and (:#{#condition.branchName} is null " +
            "or (b.branchCode like %:#{#condition.branchName}% or b.branchName like %:#{#condition.branchName}%))")
     Page<Branch> findByCondition(@Param("condition") BranchCondition condition, Pageable pageable);
+
+    List<Branch> findByDeletedFlagFalse();
 }

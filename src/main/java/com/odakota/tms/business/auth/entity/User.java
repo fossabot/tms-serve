@@ -50,4 +50,7 @@ public class User extends BaseEntity {
 
     @Column(name = "disable_flag")
     private boolean disableFlag;
+
+    @Column(name = "branch_id")
+    private Long branchId;
 }

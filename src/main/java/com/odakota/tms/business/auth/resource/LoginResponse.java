@@ -1,6 +1,5 @@
 package com.odakota.tms.business.auth.resource;
 
-import com.odakota.tms.business.auth.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +12,5 @@ public class LoginResponse {
 
     private String token;
 
-    private User userInfo;
+    private UserResource userInfo;
 }

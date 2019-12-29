@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,4 +28,6 @@ public interface UserRepository extends BaseRepository<User, UserCondition> {
     Optional<User> findByUsernameAndDeletedFlagFalse(String username);
 
     Optional<User> findByUsernameOrPhoneAndDeletedFlagFalse(String username, String phone);
+
+    List<User> findByDeletedFlagFalse();
 }

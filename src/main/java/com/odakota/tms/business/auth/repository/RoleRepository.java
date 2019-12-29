@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author haidv
  * @version 1.0
@@ -20,4 +22,6 @@ public interface RoleRepository extends BaseRepository<Role, RoleCondition> {
            "where r.deletedFlag = false and (:#{#condition.roleName} is null " +
            "or (r.roleName like %:#{#condition.roleName}% or r.roleCode like %:#{#condition.roleName}%))")
     Page<Role> findByCondition(@Param("condition") RoleCondition condition, Pageable pageable);
+
+    List<Role> findByDeletedFlagFalse();
 }
