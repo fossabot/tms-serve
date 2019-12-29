@@ -63,7 +63,7 @@ storage-service:
   exports-storage-name: /tmp/imports/
 auth:
   token:
-    expiration-time: 999999999
+    expiration-time: 99999999
     subject: tms-serve-authentication
     issuer: jp-odakota
 cloud:
