@@ -41,6 +41,10 @@ public class Constant {
     // OTP FIELD NAME
     public static final String OTP_CODE_OTP = "otp";
     public static final String OTP_DATA = "data";
+    // VIEW CONSTANT
+    public static final String MODEL_LIST_DATA = "list";
+    public static final String MODEL_SHEET_NAME = "sheet";
+    public static final String MODEL_CLAZZ = "clazz";
 
     Constant() {
     }

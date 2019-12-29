@@ -3,6 +3,7 @@ package com.odakota.tms.business.auth.service;
 import com.odakota.tms.business.auth.entity.AccessToken;
 import com.odakota.tms.business.auth.entity.Permission;
 import com.odakota.tms.business.auth.entity.User;
+import com.odakota.tms.business.auth.mapper.AuthMapper;
 import com.odakota.tms.business.auth.repository.AccessTokenRepository;
 import com.odakota.tms.business.auth.repository.UserRepository;
 import com.odakota.tms.business.auth.resource.LoginResource;
@@ -21,6 +22,7 @@ import com.odakota.tms.system.config.interceptor.TokenProvider;
 import com.odakota.tms.system.service.OtpGenerator;
 import com.odakota.tms.system.service.sns.SmsService;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +54,8 @@ public class LoginService {
     private final UserSession userSession;
 
     private final SmsService smsService;
+
+    private AuthMapper mapper = Mappers.getMapper(AuthMapper.class);
 
     @Autowired
     public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, TokenProvider tokenProvider,
@@ -118,7 +122,8 @@ public class LoginService {
         String token = tokenProvider.generateToken(user.getId(), user.getUsername(), roleIds, jti);
         LoginResponse response = new LoginResponse();
         response.setToken(token);
-        response.setUserInfo(user);
+        user.setPassword(null);
+        response.setUserInfo(mapper.convertToResource(user));
         return response;
     }
 

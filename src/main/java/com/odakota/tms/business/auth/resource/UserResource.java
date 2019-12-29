@@ -42,6 +42,8 @@ public class UserResource extends BaseResource<User> {
 
     private boolean disableFlag;
 
+    private Long branchId;
+
     public UserResource(Long id) {
         super(id);
     }

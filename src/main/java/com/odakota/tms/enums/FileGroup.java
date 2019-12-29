@@ -8,7 +8,9 @@ import lombok.Getter;
  */
 public enum FileGroup {
 
-    USER_INFO(1, "user", "JTN0001");
+    USER(1, "user", "JTN0001"),
+    ROLE(2, "role", ""),
+    BRANCH(3, "role", "");
 
     @Getter
     private Integer value;
