@@ -37,7 +37,6 @@ public class PermissionController extends BaseController<Permission, PermissionR
      */
     @RequiredAuthentication
     @GetMapping(value = "/permissions", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getPermissions() {
         return ResponseEntity.ok(new ResponseData<>().success(permissionService.getPermissions()));
     }

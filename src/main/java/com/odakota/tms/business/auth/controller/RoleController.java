@@ -5,14 +5,11 @@ import com.odakota.tms.business.auth.resource.RoleResource;
 import com.odakota.tms.business.auth.service.RoleService;
 import com.odakota.tms.business.transfers.ExportService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.enums.ApiId;
 import com.odakota.tms.enums.FileGroup;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.base.BaseParameter;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,7 +48,6 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.R_ROLE)
     @GetMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getRoles(@ModelAttribute @Valid BaseParameter baseReq) {
         return super.getResources(baseReq);
     }
@@ -64,7 +60,6 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.R_ROLE)
     @GetMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getRole(@PathVariable Long id) {
         return super.getResource(id);
     }
@@ -77,7 +72,6 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.C_ROLE)
     @PostMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> createRole(@Validated @RequestBody RoleResource resource) {
         return super.createResource(resource);
     }
@@ -91,7 +85,6 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.U_ROLE)
     @PutMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody RoleResource resource) {
         return super.updateResource(id, resource);
     }
@@ -104,7 +97,6 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.D_ROLE)
     @DeleteMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         return super.deleteResource(id);
     }
@@ -117,7 +109,6 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.D_ROLE)
     @DeleteMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<Void> batchDeleteRole(@RequestParam List<Long> ids) {
         return super.batchDeleteResource(ids);
     }
@@ -129,7 +120,6 @@ public class RoleController extends BaseController<Role, RoleResource> {
      */
     @RequiredAuthentication(value = ApiId.E_ROLE)
     @GetMapping(value = "/roles/export", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<byte[]> exportRole(HttpServletResponse response) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(

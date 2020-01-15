@@ -2,57 +2,35 @@
 <Configuration status="WARN" monitorInterval="60">
     <Properties>
         <Property name="log-path">/logs/jp/tms/</Property>
-        <Property name="ERROR_LOG_PATTERN">
-            %d{dd-MMMM-yy HH:mm:ss} [%thread] %-5level %logger{36} - Line %L - %M - %msg%n
-        </Property>
-        <Property name="DEBUG_LOG_PATTERN">
-            %d{dd-MMMM-yy HH:mm:ss} - %msg%n
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS}{UTC} %-5level [%-20X{X-Request-ID}] %logger{36} - Line %L - %M - %msg%n
         </Property>
     </Properties>
     <Appenders>
         <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
-            <PatternLayout pattern="${ERROR_LOG_PATTERN}"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
         <!--  Rolling File Appender Debug  -->
         <RollingFile name="FileAppenderDebug"
-                     fileName="${log-path}tms_staff_debug.log"
-                     filePattern="${log-path}tms_staff_debug-%d{yyyy-MM-dd}-%i.log">
+                     fileName="${log-path}tms_app_debug.log"
+                     filePattern="${log-path}tms_app_debug-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
-                <Pattern>${DEBUG_LOG_PATTERN}</Pattern>
+                <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
-                <SizeBasedTriggeringPolicy size="10MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="30"/>
-        </RollingFile>
-        <!--  Rolling File Appender Error  -->
-        <RollingFile name="FileAppenderError"
-                     fileName="${log-path}tms_staff_error.log"
-                     filePattern="${log-path}tms_staff_error-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout>
-                <Pattern>${ERROR_LOG_PATTERN}</Pattern>
-            </PatternLayout>
-            <Policies>
-                <TimeBasedTriggeringPolicy interval="1"/>
-                <SizeBasedTriggeringPolicy size="10MB"/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
             </Policies>
             <DefaultRolloverStrategy max="30"/>
         </RollingFile>
     </Appenders>
     <Loggers>
         <root level="info">
-            <AppenderRef ref="FileAppenderError" level="error"/>
+            <AppenderRef ref="FileAppenderDebug" level="info"/>
             <AppenderRef ref="ConsoleAppender" level="debug"/>
         </root>
         <logger name="org.hibernate.SQL" level="debug">
             <AppenderRef ref="FileAppenderDebug" level="debug"/>
-        </logger>
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace">
-            <AppenderRef ref="FileAppenderDebug" level="trace"/>
-        </logger>
-        <logger name="com.odakota.tms.system.config.interceptor.LoggingFilter" level="info">
-            <AppenderRef ref="FileAppenderDebug" level="info"/>
         </logger>
     </Loggers>
 </Configuration>

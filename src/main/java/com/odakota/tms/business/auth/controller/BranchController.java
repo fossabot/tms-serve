@@ -5,14 +5,11 @@ import com.odakota.tms.business.auth.resource.BranchResource;
 import com.odakota.tms.business.auth.service.BranchService;
 import com.odakota.tms.business.transfers.ExportService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.enums.ApiId;
 import com.odakota.tms.enums.FileGroup;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.base.BaseParameter;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,7 +48,6 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.R_BRANCH)
     @GetMapping(value = "/branches", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getBranches(@ModelAttribute @Valid BaseParameter baseReq) {
         return super.getResources(baseReq);
     }
@@ -64,7 +60,6 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.R_BRANCH)
     @GetMapping(value = "/branches/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getBranch(@PathVariable Long id) {
         return super.getResource(id);
     }
@@ -77,7 +72,6 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.C_BRANCH)
     @PostMapping(value = "/branches", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> createBranch(@Validated @RequestBody BranchResource resource) {
         return super.createResource(resource);
     }
@@ -91,7 +85,6 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.U_BRANCH)
     @PutMapping(value = "/branches/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> updateBranch(@PathVariable Long id, @RequestBody BranchResource resource) {
         return super.updateResource(id, resource);
     }
@@ -104,7 +97,6 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.D_BRANCH)
     @DeleteMapping(value = "/branches/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<Void> deleteBranch(@PathVariable Long id) {
         return super.deleteResource(id);
     }
@@ -117,7 +109,6 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.D_BRANCH)
     @DeleteMapping(value = "/branches", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<Void> batchDeleteBranch(@RequestParam List<Long> ids) {
         return super.batchDeleteResource(ids);
     }
@@ -129,7 +120,6 @@ public class BranchController extends BaseController<Branch, BranchResource> {
      */
     @RequiredAuthentication(value = ApiId.E_BRANCH)
     @GetMapping(value = "/branches/export", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<byte[]> exportBranch(HttpServletResponse response) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(

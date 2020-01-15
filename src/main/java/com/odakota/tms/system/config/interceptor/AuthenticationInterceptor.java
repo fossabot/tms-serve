@@ -1,6 +1,7 @@
 package com.odakota.tms.system.config.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.odakota.tms.business.auth.repository.AccessTokenRepository;
 import com.odakota.tms.business.auth.repository.PermissionRoleRepository;
 import com.odakota.tms.constant.FieldConstant;
@@ -27,7 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author haidv
@@ -118,16 +122,17 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
      */
     private void logRequest(HttpServletRequest request) {
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
-        String requestId = UUID.randomUUID().toString();
+        String requestId = request.getHeader(FieldConstant.REQUEST_ID);
         ThreadContext.put(FieldConstant.REQUEST_ID, requestId);
-        ThreadContext.put("startTime", String.valueOf(System.currentTimeMillis()));
-        log.info("-----------------------------------logging request-----------------------------------");
-        log.info("RequestId      : {}", requestId);
-        log.info("URI            : {}", requestWrapper.getRequestURI());
-        log.info("Method         : {}", request.getMethod());
-        log.info("Request Headers: {}", new ObjectMapper().valueToTree(getRequestHeaders(requestWrapper)));
-        log.info("Remote Address : {}", requestWrapper.getRemoteAddr());
-        log.info("-------------------------------------------------------------------------------------");
+        ThreadContext.put(FieldConstant.START_TIME_KEY, String.valueOf(System.currentTimeMillis()));
+        log.info("---------------------------------------------------------------------------------------");
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode parentNode = objectMapper.createObjectNode();
+        parentNode.put("URI", requestWrapper.getRequestURI());
+        parentNode.put("Method", request.getMethod());
+        parentNode.put("Remote Address", requestWrapper.getRemoteAddr());
+        parentNode.put("Request Headers", objectMapper.valueToTree(getRequestHeaders(requestWrapper)));
+        log.info(parentNode.toString());
     }
 
     /**
@@ -137,13 +142,18 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
      */
     private void logResponse(HttpServletResponse response) {
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
-        log.info("-----------------------------------logging response-----------------------------------");
-        log.info("RequestId       : {}", ThreadContext.get(FieldConstant.REQUEST_ID));
-        log.info("HttpStatus      : {}", responseWrapper.getStatus());
-        log.info("Response Headers: {}", new ObjectMapper().valueToTree(getResponseHeaders(responseWrapper)));
-        log.info("TakeTime        : {}ms", System.currentTimeMillis() - Long.parseLong(ThreadContext.get("startTime")));
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode parentNode = objectMapper.createObjectNode();
+        parentNode.put("HttpStatus", responseWrapper.getStatus());
+        parentNode
+                .put("TakeTime",
+                     System.currentTimeMillis() - Long.parseLong(ThreadContext.get(FieldConstant.START_TIME_KEY)) +
+                     "ms");
+        parentNode.put("Response Headers", objectMapper.valueToTree(getResponseHeaders(responseWrapper)));
+        log.info(parentNode.toString());
         log.info("--------------------------------------------------------------------------------------");
         ThreadContext.remove(FieldConstant.REQUEST_ID);
+        ThreadContext.remove(FieldConstant.START_TIME_KEY);
     }
 
     private Object getRequestHeaders(HttpServletRequest request) {
@@ -151,6 +161,10 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
+            if (headerName.equalsIgnoreCase("Authorization")) {
+                headers.put(headerName, "<<Not log record>>");
+                continue;
+            }
             headers.put(headerName, request.getHeader(headerName));
         }
         return headers;

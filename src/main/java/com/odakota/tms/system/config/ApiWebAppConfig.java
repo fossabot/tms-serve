@@ -42,7 +42,8 @@ public class ApiWebAppConfig implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
-                                     "/configuration/**", "/swagger-ui.html", "/webjars/**");
+                                     "/configuration/**", "/swagger-ui.html", "/webjars/**", "/csrf", "/",
+                                     "/swagger-ui.html#!/**");
     }
 
     @Override

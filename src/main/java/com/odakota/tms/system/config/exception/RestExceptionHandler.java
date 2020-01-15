@@ -67,12 +67,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
                                                                           HttpHeaders headers, HttpStatus status,
                                                                           WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace MissingServletRequestParameterException: ", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(new ResponseData<>()
-                                           .error(String.format(getMessage(MessageCode.MSG_REQUEST_PARAM_MISTING),
-                                                                ex.getParameterName())));
+        return buildResponseHandler(HttpStatus.BAD_REQUEST,
+                                    String.format(getMessage(MessageCode.MSG_REQUEST_PARAM_MISTING),
+                                                  ex.getParameterName()));
     }
 
     /**
@@ -88,14 +86,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
                                                                      HttpHeaders headers, HttpStatus status,
                                                                      WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace HttpMediaTypeNotSupportedException: ", ex);
         StringBuilder builder = new StringBuilder();
         builder.append(ex.getContentType());
         builder.append(" media type is not supported. Supported media types are ");
         ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
-        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                             .body(new ResponseData<>().error(builder.substring(0, builder.length() - 2)));
+        return buildResponseHandler(HttpStatus.UNSUPPORTED_MEDIA_TYPE, builder.substring(0, builder.length() - 2));
     }
 
     /**
@@ -112,9 +108,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
                                                                          HttpHeaders headers, HttpStatus status,
                                                                          WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
+        ThreadContext.put(FieldConstant.REQUEST_ID, request.getHeader(FieldConstant.REQUEST_ID));
         log.error("Trace HttpRequestMethodNotSupportedException: ", ex);
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(new ResponseData<>().error());
+        return buildResponseHandler(HttpStatus.METHOD_NOT_ALLOWED, getMessage(MessageCode.MSG_METHOD_NOT_SUPPORT));
     }
 
     /**
@@ -130,9 +126,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace MethodArgumentNotValidException: ", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseData<>().error(ex.getMessage()));
+        return buildResponseHandler(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     /**
@@ -148,10 +143,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace HttpMessageNotReadableException: ", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(new ResponseData<>().error(getMessage(MessageCode.MSG_JSON_MALFORMED)));
+        return buildResponseHandler(HttpStatus.BAD_REQUEST, getMessage(MessageCode.MSG_JSON_MALFORMED));
     }
 
     /**
@@ -167,10 +160,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace HttpMessageNotWritableException: ", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body(new ResponseData<>().error(getMessage(MessageCode.MSG_JSON_WRITING_ERROR)));
+        return buildResponseHandler(HttpStatus.INTERNAL_SERVER_ERROR, getMessage(MessageCode.MSG_JSON_WRITING_ERROR));
     }
 
     /**
@@ -186,12 +177,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
                                                                    HttpHeaders headers, HttpStatus status,
                                                                    WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
+        ThreadContext.put(FieldConstant.REQUEST_ID, request.getHeader(FieldConstant.REQUEST_ID));
         log.error("Trace NoHandlerFoundException: ", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body(new ResponseData<>()
-                                           .error(String.format(getMessage(MessageCode.MSG_NOT_FOUND_URL),
-                                                                ex.getHttpMethod(), ex.getRequestURL())));
+        return buildResponseHandler(HttpStatus.NOT_FOUND, String.format(getMessage(MessageCode.MSG_NOT_FOUND_URL),
+                                                                        ex.getHttpMethod(), ex.getRequestURL()));
     }
 
     /**
@@ -207,10 +196,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
                                                                       HttpHeaders headers, HttpStatus status,
                                                                       WebRequest request) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
+        ThreadContext.put(FieldConstant.REQUEST_ID, request.getHeader(FieldConstant.REQUEST_ID));
         log.error("Trace HttpMediaTypeNotAcceptableException: ", ex);
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                             .body(new ResponseData<>().error(getMessage(MessageCode.MSG_NOT_ACCEPTABLE)));
+        return buildResponseHandler(HttpStatus.NOT_ACCEPTABLE, getMessage(MessageCode.MSG_NOT_ACCEPTABLE));
     }
 
     /**
@@ -221,10 +209,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(javax.persistence.EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFound(javax.persistence.EntityNotFoundException ex) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace EntityNotFoundException: ", ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body(new ResponseData<>().error(ex.getLocalizedMessage()));
+        return buildResponseHandler(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
     }
 
     /**
@@ -235,16 +221,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     protected ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace DataIntegrityViolationException: ", ex);
         if (ex.getCause() instanceof ConstraintViolationException) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                                 .body(new ResponseData<>()
-                                               .error(getMessage(MessageCode.MSG_DATABASE_ERROR)));
+            return buildResponseHandler(HttpStatus.CONFLICT, getMessage(MessageCode.MSG_DATABASE_ERROR));
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body(new ResponseData<>()
-                                           .error(ex.getLocalizedMessage()));
+        return buildResponseHandler(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
     }
 
     /**
@@ -255,14 +236,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace MethodArgumentTypeMismatchException: ", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                             .body(new ResponseData<>()
-                                           .error(String.format(getMessage(MessageCode.MSG_REQ_PARAM_NOT_MATCH_TYPE),
-                                                                ex.getName(), ex.getValue(),
-                                                                Objects.requireNonNull(ex.getRequiredType())
-                                                                       .getSimpleName())));
+        return buildResponseHandler(HttpStatus.BAD_REQUEST,
+                                    String.format(getMessage(MessageCode.MSG_REQ_PARAM_NOT_MATCH_TYPE),
+                                                  ex.getName(), ex.getValue(),
+                                                  Objects.requireNonNull(ex.getRequiredType()).getSimpleName()));
     }
 
     /**
@@ -273,10 +251,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(UnAuthorizedException.class)
     protected ResponseEntity<Object> handleUnAuthorizedException(UnAuthorizedException ex) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace UnAuthorizedException: ", ex);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                             .body(new ResponseData<>().error(getMessage(ex.getMessage())));
+        return buildResponseHandler(HttpStatus.UNAUTHORIZED, getMessage(ex.getMessage()));
     }
 
     /**
@@ -287,10 +263,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<Object> handleCustomException(CustomException ex) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace CustomException: ", ex);
         String code = ex.getMessage() == null ? MessageCode.MSG_RUNTIME_EXCEPTION : ex.getMessage();
-        return ResponseEntity.status(ex.getStatus()).body(new ResponseData<>().error(getMessage(code)));
+        return buildResponseHandler(ex.getStatus(), getMessage(code));
     }
 
     /**
@@ -301,10 +276,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
-        log.error(FieldConstant.REQUEST_ID + ": {}", ThreadContext.get(FieldConstant.REQUEST_ID));
         log.error("Trace RuntimeException: ", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body(new ResponseData<>().error(ex.getMessage()));
+        return buildResponseHandler(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
+
+    /**
+     * Build response
+     *
+     * @param httpStatus HttpStatus
+     * @param message    message
+     * @return a {@code ResponseEntity} instance
+     */
+    private ResponseEntity<Object> buildResponseHandler(HttpStatus httpStatus, String message) {
+        ThreadContext.remove(FieldConstant.REQUEST_ID);
+        ThreadContext.remove(FieldConstant.START_TIME_KEY);
+        return ResponseEntity.status(httpStatus).body(new ResponseData<>().error(message));
     }
 
     /**

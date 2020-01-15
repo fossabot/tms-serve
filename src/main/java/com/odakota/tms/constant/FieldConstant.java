@@ -6,7 +6,8 @@ package com.odakota.tms.constant;
  */
 public class FieldConstant {
 
-    public static final String REQUEST_ID = "requestId";
+    public static final String REQUEST_ID = "X-Request-ID";
+    public static final String START_TIME_KEY = "start_time";
     public static final String API_KEY = "apiKey";
     // ROLE FIELD NAME
     public static final String ROLE_CODE = "roleCode";

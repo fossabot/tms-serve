@@ -4,12 +4,9 @@ import com.odakota.tms.business.auth.entity.PermissionRole;
 import com.odakota.tms.business.auth.resource.PermissionRoleResource;
 import com.odakota.tms.business.auth.service.PermissionRoleService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.config.data.ResponseData;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +34,6 @@ public class PermissionRoleController extends BaseController<PermissionRole, Per
      */
     @RequiredAuthentication
     @GetMapping(value = "/permission-roles", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getRolePermissions(@RequestParam(name = "roleId") Long roleId) {
         return ResponseEntity.ok(new ResponseData<>().success(permissionRoleService.getPermissionRoleIds(roleId)));
     }
@@ -50,7 +46,6 @@ public class PermissionRoleController extends BaseController<PermissionRole, Per
      */
     @RequiredAuthentication
     @PostMapping(value = "/permission-roles", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> saveRolePermissions(@RequestBody PermissionRoleResource resource) {
         permissionRoleService.saveRolePermissions(resource);
         return ResponseEntity.ok(new ResponseData<>());

@@ -5,14 +5,11 @@ import com.odakota.tms.business.auth.resource.UserResource;
 import com.odakota.tms.business.auth.service.UserService;
 import com.odakota.tms.business.transfers.ExportService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.enums.ApiId;
 import com.odakota.tms.enums.FileGroup;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.base.BaseParameter;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,7 +49,6 @@ public class UserController extends BaseController<User, UserResource> {
      */
     @RequiredAuthentication(value = ApiId.R_USER)
     @GetMapping(value = "/users", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getUsers(@ModelAttribute @Valid BaseParameter baseReq) {
         return super.getResources(baseReq);
     }
@@ -65,7 +61,6 @@ public class UserController extends BaseController<User, UserResource> {
      */
     @RequiredAuthentication(value = ApiId.C_USER)
     @PostMapping(value = "/users", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> createUsers(@RequestBody @Validated UserResource userResource) {
         return super.createResource(userResource);
     }
@@ -79,7 +74,6 @@ public class UserController extends BaseController<User, UserResource> {
      */
     @RequiredAuthentication(value = ApiId.U_USER)
     @PutMapping(value = "/users/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> updateUsers(@PathVariable Long id, @RequestBody @Validated UserResource userResource) {
         return super.updateResource(id, userResource);
     }
@@ -92,7 +86,6 @@ public class UserController extends BaseController<User, UserResource> {
      */
     @RequiredAuthentication(value = ApiId.D_USER)
     @DeleteMapping(value = "/users/{id}", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> deleteUsers(@PathVariable Long id) {
         return super.deleteResource(id);
     }
@@ -105,7 +98,6 @@ public class UserController extends BaseController<User, UserResource> {
      */
     @RequiredAuthentication(value = ApiId.D_USER)
     @DeleteMapping(value = "/users", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> batchDeleteUsers(List<Long> ids) {
         return super.batchDeleteResource(ids);
     }
@@ -117,7 +109,6 @@ public class UserController extends BaseController<User, UserResource> {
      */
     @RequiredAuthentication(value = ApiId.E_USER)
     @GetMapping(value = "/users/export", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<byte[]> exportUser(HttpServletResponse response) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(

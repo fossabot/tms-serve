@@ -28,6 +28,7 @@ public class MessageCode {
     public static final String MSG_ACCESS_DENIED = "access.denied";
     public static final String MSG_TOKEN_INVALID = "token.invalid";
     public static final String MSG_TOKEN_EXPIRED = "token.expired";
+    public static final String MSG_METHOD_NOT_SUPPORT = "method.not.support";
     // Field error code
     public static final String MSG_REQUIRED = "ng.general.required";
     public static final String MSG_PHONE = "ng.general.phone-valid";

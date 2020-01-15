@@ -4,15 +4,12 @@ import com.odakota.tms.business.auth.resource.LoginResource;
 import com.odakota.tms.business.auth.service.LoginService;
 import com.odakota.tms.business.auth.service.UserService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.enums.LoginType;
 import com.odakota.tms.system.annotations.NoAuthentication;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.annotations.groups.OnCreate;
 import com.odakota.tms.system.annotations.groups.OnUpdate;
 import com.odakota.tms.system.config.data.ResponseData;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -66,7 +63,6 @@ public class LoginController {
      */
     @RequiredAuthentication
     @DeleteMapping(value = "/revoke", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<Void> logout() {
         loginService.logout();
         return ResponseEntity.noContent().build();
@@ -102,7 +98,6 @@ public class LoginController {
      */
     @RequiredAuthentication
     @GetMapping(value = "/user-permission", produces = ApiVersion.API_VERSION_1)
-    @ApiOperation(value = "", authorizations = @Authorization(FieldConstant.API_KEY))
     public ResponseEntity<?> getUserPermission() {
         return ResponseEntity.ok(new ResponseData<>().success(loginService.getUserPermissions()));
     }

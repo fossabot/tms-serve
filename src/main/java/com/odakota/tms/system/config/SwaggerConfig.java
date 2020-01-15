@@ -4,16 +4,18 @@ import com.odakota.tms.constant.FieldConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.Contact;
+import springfox.documentation.schema.ModelRef;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
+import java.util.UUID;
 
 /**
  * @author haidv
@@ -31,8 +33,9 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo())
-                .securitySchemes(
-                        Collections.singletonList(new ApiKey(FieldConstant.API_KEY, "Authorization", "Header")))
+                .securityContexts(Collections.singletonList(securityContext()))
+                .securitySchemes(Collections.singletonList(securityScheme()))
+                .globalOperationParameters(Collections.singletonList(parameter()))
                 .useDefaultResponseMessages(false);
     }
 
@@ -44,5 +47,27 @@ public class SwaggerConfig {
                                    .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
                                    .version("1.0")
                                    .build();
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                              .securityReferences(Collections.singletonList(securityReference()))
+                              .build();
+    }
+
+    private SecurityScheme securityScheme() {
+        return new ApiKey(FieldConstant.API_KEY, "Authorization", "Header");
+    }
+
+    private SecurityReference securityReference() {
+        return new SecurityReference(FieldConstant.API_KEY, new AuthorizationScope[0]);
+    }
+
+    private Parameter parameter() {
+        return new ParameterBuilder().name("X-Request-ID")
+                                     .defaultValue(UUID.randomUUID().toString())
+                                     .parameterType("header")
+                                     .modelRef(new ModelRef("string")).required(true).build();
+
     }
 }
