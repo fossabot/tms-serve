@@ -252,7 +252,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UnAuthorizedException.class)
     protected ResponseEntity<Object> handleUnAuthorizedException(UnAuthorizedException ex) {
         log.error("Trace UnAuthorizedException: ", ex);
-        return buildResponseHandler(HttpStatus.UNAUTHORIZED, getMessage(ex.getMessage()));
+        return buildResponseHandler(ex.getStatus(), getMessage(ex.getMessage()));
     }
 
     /**

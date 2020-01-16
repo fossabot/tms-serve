@@ -19,5 +19,5 @@ public interface PermissionRoleRepository extends BaseRepository<PermissionRole,
 
     Optional<PermissionRole> findByRoleIdAndPermissionIdAndDeletedFlagFalse(Long roleId, Long permissionId);
 
-    boolean existsByApiIdAndRoleIdIn(String apiId, List<Long> roleIds);
+    boolean existsByApiIdAndRoleIdInAndDeletedFlagFalse(String apiId, List<Long> roleIds);
 }

@@ -4,6 +4,7 @@ import com.odakota.tms.business.auth.entity.PermissionRole;
 import com.odakota.tms.business.auth.resource.PermissionRoleResource;
 import com.odakota.tms.business.auth.service.PermissionRoleService;
 import com.odakota.tms.constant.ApiVersion;
+import com.odakota.tms.enums.ApiId;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.config.data.ResponseData;
@@ -44,7 +45,7 @@ public class PermissionRoleController extends BaseController<PermissionRole, Per
      * @param resource PermissionRoleResource
      * @return {@link ResponseEntity}
      */
-    @RequiredAuthentication
+    @RequiredAuthentication(ApiId.U_ROLE_PERMISSION)
     @PostMapping(value = "/permission-roles", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> saveRolePermissions(@RequestBody PermissionRoleResource resource) {
         permissionRoleService.saveRolePermissions(resource);

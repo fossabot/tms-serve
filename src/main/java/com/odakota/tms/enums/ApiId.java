@@ -16,6 +16,7 @@ public enum ApiId {
     D_ROLE("role:delete"),
     E_ROLE("role:export"),
     I_ROLE("role:import"),
+    U_ROLE_PERMISSION("role:permission:update"),
     C_USER("user:create"),
     R_USER("user:read"),
     U_USER("user:update"),
