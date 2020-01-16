@@ -106,7 +106,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
                     return true;
                 }
                 // Check request has permission
-                if (!permissionRoleRepository.existsByApiIdAndRoleIdIn(apiId.getValue(), userSession.getRoleIds())) {
+                if (!permissionRoleRepository.existsByApiIdAndRoleIdInAndDeletedFlagFalse(apiId.getValue(), userSession.getRoleIds())) {
                     throw new UnAuthorizedException(MessageCode.MSG_ACCESS_DENIED, HttpStatus.FORBIDDEN);
                 }
                 return true;

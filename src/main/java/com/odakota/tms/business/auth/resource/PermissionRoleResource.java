@@ -23,6 +23,8 @@ public class PermissionRoleResource extends BaseResource<PermissionRole> {
 
     private String lastPermissionIds;
 
+    private String auth;
+
     /**
      * @author haidv
      * @version 1.0

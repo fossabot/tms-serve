@@ -1,11 +1,16 @@
 package com.odakota.tms.business.auth.service;
 
+import com.odakota.tms.business.auth.entity.Permission;
 import com.odakota.tms.business.auth.entity.PermissionRole;
+import com.odakota.tms.business.auth.repository.PermissionRepository;
 import com.odakota.tms.business.auth.repository.PermissionRoleRepository;
 import com.odakota.tms.business.auth.resource.PermissionRoleResource;
 import com.odakota.tms.business.auth.resource.PermissionRoleResource.PermissionRoleCondition;
+import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.base.BaseService;
+import com.odakota.tms.system.config.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +27,14 @@ public class PermissionRoleService extends BaseService<PermissionRole, Permissio
 
     private final PermissionRoleRepository permissionRoleRepository;
 
+    private final PermissionRepository permissionRepository;
+
     @Autowired
-    public PermissionRoleService(PermissionRoleRepository permissionRoleRepository) {
+    public PermissionRoleService(PermissionRoleRepository permissionRoleRepository,
+                                 PermissionRepository permissionRepository) {
         super(permissionRoleRepository);
         this.permissionRoleRepository = permissionRoleRepository;
+        this.permissionRepository = permissionRepository;
     }
 
     /**
@@ -56,9 +65,14 @@ public class PermissionRoleService extends BaseService<PermissionRole, Permissio
                                      .map(Long::parseLong).collect(Collectors.toList());
         // add permission role
         addIds.forEach(tmp -> {
+            Permission permission = permissionRepository.findByIdAndDeletedFlagFalse(tmp)
+                                                        .orElseThrow(() -> new CustomException(
+                                                                MessageCode.MSG_RESOURCE_NOT_EXIST,
+                                                                HttpStatus.BAD_REQUEST));
             PermissionRole permissionRole = new PermissionRole();
             permissionRole.setRoleId(resource.getRoleId());
             permissionRole.setPermissionId(tmp);
+            permissionRole.setApiId(permission.getPerms());
             permissionRoleRepository.save(permissionRole);
         });
         // delete permission role

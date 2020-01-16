@@ -31,22 +31,22 @@ public class MessageCode {
     public static final String MSG_METHOD_NOT_SUPPORT = "method.not.support";
     // Field error code
     public static final String MSG_REQUIRED = "ng.general.required";
-    public static final String MSG_PHONE = "ng.general.phone-valid";
-    public static final String MSG_EMAIL = "ng.general.email-valid";
-    public static final String MSG_MAX_LENGTH = "ng.general.greater-than-max-length";
-    public static final String MSG_NOT_MATCHED = "ng.general.not-matched";
+    public static final String MSG_PHONE = "ng.general.phone.valid";
+    public static final String MSG_EMAIL = "ng.general.email.valid";
+    public static final String MSG_MAX_LENGTH = "ng.general.greater.than.max.length";
+    public static final String MSG_NOT_MATCHED = "ng.general.not.matched";
     // Business error code
     public static final String MSG_RESOURCE_NOT_EXIST = "resource.not.exist";
     public static final String MSG_INVALID_USERNAME_PASS = "invalid.username.password";
     public static final String MSG_ACCOUNT_DISABLED = "account.disabled";
-    public static final String MSG_USER_NOT_DELETED = "user.not-deleted";
-    public static final String MSG_USER_NOT_UPDATED = "user.not-updated";
+    public static final String MSG_USER_NOT_DELETED = "user.not.deleted";
+    public static final String MSG_USER_NOT_UPDATED = "user.not.updated";
     public static final String MSG_PHONE_EXISTED = "phone.existed";
     public static final String MSG_EMAIL_EXISTED = "email.existed";
     public static final String MSG_USER_NAME_EXISTED = "username.existed";
-    public static final String MSG_ROLE_CODE_EXISTED = "role-code.existed";
-    public static final String MSG_ROLE_NOT_DELETED = "role.not-deleted";
-    public static final String MSG_ROLE_NOT_UPDATED = "role.not-updated";
+    public static final String MSG_ROLE_CODE_EXISTED = "role.code.existed";
+    public static final String MSG_ROLE_NOT_DELETED = "role.not.deleted";
+    public static final String MSG_ROLE_NOT_UPDATED = "role.not.updated";
     public static final String MSG_CAPTCHA_EXPIRED = "captcha.expired";
     public static final String MSG_CAPTCHA_INVALID = "captcha.invalid";
     public static final String MSG_DOWNLOAD_S3_FAIL = "download.s3.fail";
@@ -54,9 +54,9 @@ public class MessageCode {
     public static final String MSG_DELETE_S3_FAIL = "delete.s3.fail";
     public static final String MSG_COPY_S3_FAIL = "copy.s3.fail";
     public static final String MSG_FILE_NOT_FOUND = "file.not.existed";
-    public static final String MSG_BRANCH_CODE_EXISTED = "branch-code.existed";
-    public static final String MSG_BRANCH_NOT_DELETED = "branch.not-deleted";
-    public static final String MSG_BRANCH_NOT_UPDATED = "branch.not-updated";
+    public static final String MSG_BRANCH_CODE_EXISTED = "branch.code.existed";
+    public static final String MSG_BRANCH_NOT_DELETED = "branch.not.deleted";
+    public static final String MSG_BRANCH_NOT_UPDATED = "branch.not.updated";
 
     MessageCode() {
     }
