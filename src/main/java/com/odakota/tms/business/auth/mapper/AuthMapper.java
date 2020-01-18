@@ -1,13 +1,7 @@
 package com.odakota.tms.business.auth.mapper;
 
-import com.odakota.tms.business.auth.entity.Branch;
-import com.odakota.tms.business.auth.entity.Permission;
-import com.odakota.tms.business.auth.entity.Role;
-import com.odakota.tms.business.auth.entity.User;
-import com.odakota.tms.business.auth.resource.BranchResource;
-import com.odakota.tms.business.auth.resource.PermissionResource;
-import com.odakota.tms.business.auth.resource.RoleResource;
-import com.odakota.tms.business.auth.resource.UserResource;
+import com.odakota.tms.business.auth.entity.*;
+import com.odakota.tms.business.auth.resource.*;
 import com.odakota.tms.enums.Gender;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,6 +22,10 @@ public interface AuthMapper {
     BranchResource convertToResource(Branch entity);
 
     Branch convertToEntity(BranchResource resource);
+
+    BrandResource convertToResource(Brand entity);
+
+    Brand convertToEntity(BrandResource resource);
 
     @Mapping(source = "sex", target = "sex", qualifiedByName = "getValueSex")
     UserResource convertToResource(User entity);

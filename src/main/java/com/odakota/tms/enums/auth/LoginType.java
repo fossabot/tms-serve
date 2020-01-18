@@ -1,4 +1,4 @@
-package com.odakota.tms.enums;
+package com.odakota.tms.enums.auth;
 
 /**
  * @author haidv

@@ -14,8 +14,11 @@ import com.odakota.tms.business.auth.resource.userpermission.PermissionMetaResou
 import com.odakota.tms.business.auth.resource.userpermission.UserPermissionResource;
 import com.odakota.tms.constant.Constant;
 import com.odakota.tms.constant.MessageCode;
-import com.odakota.tms.enums.LoginType;
-import com.odakota.tms.enums.SmsType;
+import com.odakota.tms.constant.SmsMessageConstant;
+import com.odakota.tms.enums.auth.Client;
+import com.odakota.tms.enums.auth.LoginType;
+import com.odakota.tms.enums.auth.SmsType;
+import com.odakota.tms.enums.auth.TokenType;
 import com.odakota.tms.system.config.UserSession;
 import com.odakota.tms.system.config.exception.CustomException;
 import com.odakota.tms.system.config.interceptor.TokenProvider;
@@ -80,50 +83,47 @@ public class LoginService {
      * @param loginResource LoginResource
      * @return Object
      */
-    public Object login(LoginResource loginResource, LoginType loginType) {
-        String key;
-        if (loginType.equals(LoginType.ACCOUNT)) {
-            key = loginResource.getCheckKey();
-        } else {
-            key = Constant.LOGIN_PHONE_PREFIX_KEY + loginResource.getPhone();
-        }
+    public Object login(LoginResource loginResource, Client client, LoginType loginType) {
         // check captcha
-        Map<String, Object> map = otpGenerator.getOPTByKey(key);
-        if (map == null || map.size() == 0) {
-            throw new CustomException(MessageCode.MSG_CAPTCHA_EXPIRED, HttpStatus.BAD_REQUEST);
+        this.checkCaptcha(loginResource, loginType);
+        LoginResponse response = new LoginResponse();
+        List<Long> roleIds = null;
+        Long id;
+        User user = null;
+        if (client.equals(Client.ADMIN)) {
+            user = this.validateUser(loginResource, loginType);
+            // get list role id
+            roleIds = userRoleService.getUserRoleIds(user.getId());
+            id = user.getId();
+        } else {
+            id = (long) 1;
         }
-        if (!map.get(Constant.OTP_CODE_OTP).equals(loginResource.getCaptcha())) {
-            throw new CustomException(MessageCode.MSG_CAPTCHA_INVALID, HttpStatus.BAD_REQUEST);
-        }
-        // clear cache
-        otpGenerator.clearOTPFromCache(key);
-        User user = userRepository
-                .findByUsernameOrPhoneAndDeletedFlagFalse(loginResource.getUsername(), loginResource.getPhone())
-                .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS,
-                                                       HttpStatus.BAD_REQUEST));
-        // check password
-        if (loginType.equals(LoginType.ACCOUNT) &&
-            !passwordEncoder.matches(loginResource.getPassword(), user.getPassword())) {
-            throw new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS, HttpStatus.BAD_REQUEST);
-        }
-        // check status
-        if (user.isDisableFlag()) {
-            throw new CustomException(MessageCode.MSG_ACCOUNT_DISABLED, HttpStatus.CONFLICT);
-        }
-        // get list role id
-        List<Long> roleIds = userRoleService.getUserRoleIds(user.getId());
         String jti = UUID.randomUUID().toString();
+        String refreshJti = UUID.randomUUID().toString();
         // save information to access token
         AccessToken accessToken = new AccessToken();
         accessToken.setJti(jti);
+        accessToken.setRefreshJti(refreshJti);
         accessToken.setCreateDate(new Date());
+        accessToken.setClient(client.name());
+        accessToken.setUserId(id);
         accessTokenRepository.save(accessToken);
-        // generate token
-        String token = tokenProvider.generateToken(user.getId(), user.getUsername(), roleIds, jti);
-        LoginResponse response = new LoginResponse();
-        response.setToken(token);
-        user.setPassword(null);
-        response.setUserInfo(mapper.convertToResource(user));
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constant.TOKEN_CLAIM_USER_ID, id);
+        map.put(Constant.TOKEN_CLAIM_ROLE_ID, StringUtils.join(roleIds, ","));
+        if (client.equals(Client.ADMIN)) {
+            map.put(Constant.TOKEN_CLAIM_BRANCH_ID, user.getBranchId());
+            map.put(Constant.TOKEN_CLAIM_BRAND_ID, user.getBrandId());
+            // generate token
+            response.setToken(tokenProvider.generateToken(TokenType.ACCESS, Client.ADMIN, jti, map));
+            response.setRefresh(tokenProvider.generateToken(TokenType.REFRESH, Client.ADMIN, refreshJti, map));
+            user.setPassword(null);
+            response.setUserInfo(mapper.convertToResource(user));
+        } else {
+            // generate token
+            response.setToken(tokenProvider.generateToken(TokenType.ACCESS, Client.CUSTOMER, jti, map));
+            response.setRefresh(tokenProvider.generateToken(TokenType.REFRESH, Client.CUSTOMER, refreshJti, map));
+        }
         return response;
     }
 
@@ -152,16 +152,16 @@ public class LoginService {
     /**
      * Send sms otp
      */
-    public void sendSmsOTP(String phone, Integer smsType) {
-        String code = null;
+    public void sendSmsOTP(String phone, SmsType smsType) {
+        String code;
         String message = null;
-        if (smsType == SmsType.SMS_LOGIN.getValue()) {
+        if (smsType.equals(SmsType.LOGIN)) {
             code = otpGenerator.generateOTP(Constant.LOGIN_PHONE_PREFIX_KEY + phone);
-            message = "MA XAC NHAN LOGIN CUA BAN LA: " + code;
+            message = SmsMessageConstant.SMS_LOGIN + code;
         }
-        if (smsType == SmsType.SMS_FORGOT.getValue()) {
+        if (smsType.equals(SmsType.FORGOT)) {
             code = otpGenerator.generateOTP(Constant.FORGOT_PASS_PREFIX_KEY + phone);
-            message = "MA XAC NHAN RESET PASSWORD CUA BAN LA: " + code;
+            message = SmsMessageConstant.SMS_FORGOT + code;
         }
         if (message != null && phone != null) {
             smsService.sendSMSMessage(message, phone);
@@ -337,5 +337,54 @@ public class LoginService {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Check captcha to match
+     *
+     * @param loginResource LoginResource
+     * @param loginType     loginType
+     */
+    private void checkCaptcha(LoginResource loginResource, LoginType loginType) {
+        String key;
+        if (loginType.equals(LoginType.ACCOUNT)) {
+            key = loginResource.getCheckKey();
+        } else {
+            key = Constant.LOGIN_PHONE_PREFIX_KEY + loginResource.getPhone();
+        }
+        // check captcha
+        Map<String, Object> map = otpGenerator.getOPTByKey(key);
+        if (map == null || map.size() == 0) {
+            throw new CustomException(MessageCode.MSG_CAPTCHA_EXPIRED, HttpStatus.BAD_REQUEST);
+        }
+        if (!map.get(Constant.OTP_CODE_OTP).equals(loginResource.getCaptcha())) {
+            throw new CustomException(MessageCode.MSG_CAPTCHA_INVALID, HttpStatus.BAD_REQUEST);
+        }
+        // clear cache
+        otpGenerator.clearOTPFromCache(key);
+    }
+
+    /**
+     * Validate user login admin site
+     *
+     * @param loginResource LoginResource
+     * @param loginType     LoginType
+     * @return User
+     */
+    private User validateUser(LoginResource loginResource, LoginType loginType) {
+        User user = userRepository
+                .findByUsernameOrPhoneAndDeletedFlagFalse(loginResource.getUsername(), loginResource.getPhone())
+                .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS,
+                                                       HttpStatus.BAD_REQUEST));
+        // check password
+        if (loginType.equals(LoginType.ACCOUNT) &&
+            !passwordEncoder.matches(loginResource.getPassword(), user.getPassword())) {
+            throw new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS, HttpStatus.BAD_REQUEST);
+        }
+        // check status
+        if (user.isDisableFlag()) {
+            throw new CustomException(MessageCode.MSG_ACCOUNT_DISABLED, HttpStatus.CONFLICT);
+        }
+        return user;
     }
 }

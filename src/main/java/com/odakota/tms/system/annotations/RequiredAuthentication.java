@@ -1,6 +1,6 @@
 package com.odakota.tms.system.annotations;
 
-import com.odakota.tms.enums.ApiId;
+import com.odakota.tms.enums.auth.ApiId;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

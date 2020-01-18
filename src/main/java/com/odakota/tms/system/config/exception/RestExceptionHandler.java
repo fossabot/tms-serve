@@ -1,10 +1,8 @@
 package com.odakota.tms.system.config.exception;
 
-import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.constant.MessageCode;
 import com.odakota.tms.system.config.data.ResponseData;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.ThreadContext;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -108,7 +106,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
                                                                          HttpHeaders headers, HttpStatus status,
                                                                          WebRequest request) {
-        ThreadContext.put(FieldConstant.REQUEST_ID, request.getHeader(FieldConstant.REQUEST_ID));
         log.error("Trace HttpRequestMethodNotSupportedException: ", ex);
         return buildResponseHandler(HttpStatus.METHOD_NOT_ALLOWED, getMessage(MessageCode.MSG_METHOD_NOT_SUPPORT));
     }
@@ -177,7 +174,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
                                                                    HttpHeaders headers, HttpStatus status,
                                                                    WebRequest request) {
-        ThreadContext.put(FieldConstant.REQUEST_ID, request.getHeader(FieldConstant.REQUEST_ID));
         log.error("Trace NoHandlerFoundException: ", ex);
         return buildResponseHandler(HttpStatus.NOT_FOUND, String.format(getMessage(MessageCode.MSG_NOT_FOUND_URL),
                                                                         ex.getHttpMethod(), ex.getRequestURL()));
@@ -196,7 +192,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
                                                                       HttpHeaders headers, HttpStatus status,
                                                                       WebRequest request) {
-        ThreadContext.put(FieldConstant.REQUEST_ID, request.getHeader(FieldConstant.REQUEST_ID));
         log.error("Trace HttpMediaTypeNotAcceptableException: ", ex);
         return buildResponseHandler(HttpStatus.NOT_ACCEPTABLE, getMessage(MessageCode.MSG_NOT_ACCEPTABLE));
     }
@@ -288,8 +283,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @return a {@code ResponseEntity} instance
      */
     private ResponseEntity<Object> buildResponseHandler(HttpStatus httpStatus, String message) {
-        ThreadContext.remove(FieldConstant.REQUEST_ID);
-        ThreadContext.remove(FieldConstant.START_TIME_KEY);
         return ResponseEntity.status(httpStatus).body(new ResponseData<>().error(message));
     }
 

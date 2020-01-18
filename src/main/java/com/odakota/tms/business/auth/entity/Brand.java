@@ -14,14 +14,17 @@ import javax.persistence.Table;
  */
 @Entity
 @Setter @Getter
-@Table(name = "user_branch_tbl")
-public class UserBranch extends BaseEntity {
+@Table(name = "brand_tbl")
+public class Brand extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "brand_name")
+    private String brandName;
 
-    @Column(name = "branch_id")
-    private Long branchId;
+    @Column(name = "brand_code", updatable = false)
+    private String brandCode;
+
+    @Column(name = "brand_image")
+    private String brandImage;
 }

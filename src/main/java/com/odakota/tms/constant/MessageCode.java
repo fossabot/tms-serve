@@ -56,7 +56,8 @@ public class MessageCode {
     public static final String MSG_FILE_NOT_FOUND = "file.not.existed";
     public static final String MSG_BRANCH_CODE_EXISTED = "branch.code.existed";
     public static final String MSG_BRANCH_NOT_DELETED = "branch.not.deleted";
-    public static final String MSG_BRANCH_NOT_UPDATED = "branch.not.updated";
+    public static final String MSG_BRAND_NOT_DELETED = "brand.not.deleted";
+    public static final String MSG_BRAND_NOT_EXISTED = "brand.not.existed";
 
     MessageCode() {
     }

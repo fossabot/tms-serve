@@ -16,9 +16,13 @@ public class UserSession {
 
     private Long userId;
 
-    private String username;
-
     private List<Long> roleIds;
 
+    private List<Long> test;
+
     private String tokenId;
+
+    private Long brandId;
+
+    private Long branchId;
 }

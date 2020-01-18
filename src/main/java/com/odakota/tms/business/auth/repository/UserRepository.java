@@ -30,4 +30,8 @@ public interface UserRepository extends BaseRepository<User, UserCondition> {
     Optional<User> findByUsernameOrPhoneAndDeletedFlagFalse(String username, String phone);
 
     List<User> findByDeletedFlagFalse();
+
+    long countByBrandIdAndDeletedFlagFalse(Long brandId);
+
+    long countByBranchIdAndDeletedFlagFalse(Long branchId);
 }

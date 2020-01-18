@@ -6,7 +6,7 @@ import com.odakota.tms.business.auth.repository.AccessTokenRepository;
 import com.odakota.tms.business.auth.repository.PermissionRoleRepository;
 import com.odakota.tms.constant.FieldConstant;
 import com.odakota.tms.constant.MessageCode;
-import com.odakota.tms.enums.ApiId;
+import com.odakota.tms.enums.auth.ApiId;
 import com.odakota.tms.system.annotations.NoAuthentication;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.config.UserSession;

@@ -63,9 +63,12 @@ storage-service:
   exports-storage-name: /tmp/imports/
 auth:
   token:
-    expiration-time: 1440
-    subject: tms-serve-authentication
-    issuer: jp-odakota
+    admin:
+      access-expire: 480 #8h
+      refresh-expire: 4320 #3d
+    customer:
+      access-expire: 10080 #7d
+      refresh-expire: 43200 #30d
 cloud:
   aws:
     credentials:
