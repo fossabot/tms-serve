@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -33,6 +34,9 @@ public class BranchResource extends BaseResource<Branch> {
     @Size(max = 500, message = MessageCode.MSG_MAX_LENGTH)
     private String branchAddress;
 
+    @NotNull(message = MessageCode.MSG_REQUIRED)
+    private Long brandId;
+
     public BranchResource(Long id) {
         super(id);
     }
@@ -47,5 +51,7 @@ public class BranchResource extends BaseResource<Branch> {
     public static class BranchCondition extends BaseCondition {
 
         private String branchName;
+
+        private Long brandId;
     }
 }

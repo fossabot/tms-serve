@@ -18,10 +18,24 @@ import java.util.List;
 @Repository
 public interface BranchRepository extends BaseRepository<Branch, BranchCondition> {
 
-    @Query("select b from Branch b " +
-           "where b.deletedFlag = false and (:#{#condition.branchName} is null " +
-           "or (b.branchCode like %:#{#condition.branchName}% or b.branchName like %:#{#condition.branchName}%))")
+    /**
+     * String build = "where b.deletedFlag = false";
+     * <p>
+     * if(condition.branchName != null){ build = build + "b.branchCode like '%condition.branchName%' or b.branchName
+     * like '%condition.branchName%'"; }
+     * <p>
+     * if(userSession.brandId != null) { build = build + "b.brandId = userSession.brandId"; }
+     * <p>
+     * else if(userSession.brandId == null && condition.brandId != null){ build = build + "b.brandId =
+     * condition.brandId"; }
+     */
+    @Query("select b from Branch b where b.deletedFlag = false and (:#{#condition.branchName} is null " +
+           "or (b.branchCode like %:#{#condition.branchName}% or b.branchName like %:#{#condition.branchName}%))" +
+           "and ((:#{@userSession.brandId} is null and (:#{#condition.brandId} is null " +
+           "or b.brandId = :#{#condition.brandId})) or b.brandId = :#{@userSession.brandId})")
     Page<Branch> findByCondition(@Param("condition") BranchCondition condition, Pageable pageable);
 
     List<Branch> findByDeletedFlagFalse();
+
+    long countByBrandIdAndDeletedFlagFalse(Long brandId);
 }

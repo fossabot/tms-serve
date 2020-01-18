@@ -44,6 +44,8 @@ public class UserResource extends BaseResource<User> {
 
     private Long branchId;
 
+    private Long brandId;
+
     public UserResource(Long id) {
         super(id);
     }
@@ -64,5 +66,9 @@ public class UserResource extends BaseResource<User> {
         private String phone;
 
         private Boolean disableFlag;
+
+        private Long branchId;
+
+        private Long brandId;
     }
 }

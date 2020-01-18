@@ -27,4 +27,13 @@ public class Role extends BaseEntity {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "brand_id")
+    private Long brandId;
+
+    @Column(name = "branch_id")
+    private Long branchId;
+
+    @Column(name = "is_root")
+    private boolean isRoot;
 }

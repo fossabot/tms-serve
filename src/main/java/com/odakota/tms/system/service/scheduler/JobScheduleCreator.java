@@ -59,10 +59,11 @@ public class JobScheduleCreator {
      * @param misFireInstruction Misfire instruction (what to do in case of misfire happens).
      * @return {@link CronTrigger}
      */
-    public CronTrigger createCronTrigger(String triggerName, Date startTime, String cronExpression,
+    public CronTrigger createCronTrigger(String triggerName, String triggerGroup, Date startTime, String cronExpression,
                                          int misFireInstruction) {
         CronTriggerFactoryBean factoryBean = new CronTriggerFactoryBean();
         factoryBean.setName(triggerName);
+        factoryBean.setGroup(triggerGroup);
         factoryBean.setStartTime(startTime);
         factoryBean.setCronExpression(cronExpression);
         factoryBean.setMisfireInstruction(misFireInstruction);

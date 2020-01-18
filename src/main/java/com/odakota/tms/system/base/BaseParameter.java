@@ -2,6 +2,7 @@ package com.odakota.tms.system.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odakota.tms.system.annotations.ConditionString;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,16 +28,20 @@ import static javax.validation.constraints.Pattern.Flag.CASE_INSENSITIVE;
 @Setter @Getter
 public class BaseParameter {
 
+    @ApiModelProperty(value = "page size", example = "10")
     private Integer limit;
 
+    @ApiModelProperty(value = "page number", example = "1")
     private Integer page;
 
+    @ApiModelProperty(value = "sort", example = "id:asc")
     @Pattern(regexp = "^[a-z0-9]+:(asc|desc)$", flags = CASE_INSENSITIVE)
     private String sort;
 
     /**
      * Search condition string (Base64(JSON))
      */
+    @ApiModelProperty(value = "Search condition string (Base64(JSON))")
     @ConditionString
     private String condition;
 

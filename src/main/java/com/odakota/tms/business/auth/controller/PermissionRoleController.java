@@ -4,7 +4,7 @@ import com.odakota.tms.business.auth.entity.PermissionRole;
 import com.odakota.tms.business.auth.resource.PermissionRoleResource;
 import com.odakota.tms.business.auth.service.PermissionRoleService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.enums.ApiId;
+import com.odakota.tms.enums.auth.ApiId;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.config.data.ResponseData;

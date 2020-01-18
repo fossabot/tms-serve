@@ -26,6 +26,15 @@ public class AccessToken implements Serializable {
     @Column(name = "jti")
     private String jti;
 
+    @Column(name = "refresh_jti")
+    private String refreshJti;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "client")
+    private String client;
+
     @Column(name = "created_date")
     private Date createDate;
 }

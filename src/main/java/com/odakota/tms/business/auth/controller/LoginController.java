@@ -4,15 +4,14 @@ import com.odakota.tms.business.auth.resource.LoginResource;
 import com.odakota.tms.business.auth.service.LoginService;
 import com.odakota.tms.business.auth.service.UserService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.enums.LoginType;
+import com.odakota.tms.enums.auth.Client;
+import com.odakota.tms.enums.auth.LoginType;
+import com.odakota.tms.enums.auth.SmsType;
 import com.odakota.tms.system.annotations.NoAuthentication;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
-import com.odakota.tms.system.annotations.groups.OnCreate;
-import com.odakota.tms.system.annotations.groups.OnUpdate;
 import com.odakota.tms.system.config.data.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -33,27 +32,16 @@ public class LoginController {
     }
 
     /**
-     * API login with account
+     * API login
      *
      * @param resource login resource
      * @return {@link ResponseEntity}
      */
     @NoAuthentication
-    @PostMapping(value = "/account-login", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> accountLogin(@Validated({OnCreate.class}) @RequestBody LoginResource resource) {
-        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource, LoginType.ACCOUNT)));
-    }
-
-    /**
-     * API login with phone
-     *
-     * @param resource login resource
-     * @return {@link ResponseEntity}
-     */
-    @NoAuthentication
-    @PostMapping(value = "/phone-login", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> phoneLogin(@Validated({OnUpdate.class}) @RequestBody LoginResource resource) {
-        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource, LoginType.PHONE)));
+    @PostMapping(value = "/token", produces = ApiVersion.API_VERSION_1)
+    public ResponseEntity<?> login(@RequestParam Client client, @RequestParam LoginType loginType,
+                                          @RequestBody LoginResource resource) {
+        return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource, client, loginType)));
     }
 
     /**
@@ -86,7 +74,7 @@ public class LoginController {
      */
     @NoAuthentication
     @GetMapping(value = "/sms-otp", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> sendOtp(@RequestParam String phone, @RequestParam Integer smsType) {
+    public ResponseEntity<?> sendOtp(@RequestParam String phone, @RequestParam SmsType smsType) {
         loginService.sendSmsOTP(phone, smsType);
         return ResponseEntity.ok(new ResponseData<>());
     }
@@ -117,7 +105,6 @@ public class LoginController {
     /**
      * API forgot password step 1: get user information with username
      *
-     * @param username username
      * @return {@link ResponseEntity}
      */
     @NoAuthentication

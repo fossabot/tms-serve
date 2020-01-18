@@ -19,7 +19,7 @@ import java.util.Optional;
 public class PersistenceConfig {
 
     @Bean
-    AuditorAware<String> auditorProvider() {
+    AuditorAware<Long> auditorProvider() {
         return new AuditorAwareImpl();
     }
 
@@ -30,14 +30,14 @@ public class PersistenceConfig {
      * @author haidv
      * @version 1.0
      */
-    public static class AuditorAwareImpl implements AuditorAware<String> {
+    public static class AuditorAwareImpl implements AuditorAware<Long> {
 
         @Autowired
         private UserSession userSession;
 
         @Override
-        public Optional<String> getCurrentAuditor() {
-            return Optional.of(userSession.getUsername() == null ? "admin" : userSession.getUsername());
+        public Optional<Long> getCurrentAuditor() {
+            return userSession == null ? Optional.empty() : Optional.of(userSession.getUserId());
         }
 
     }

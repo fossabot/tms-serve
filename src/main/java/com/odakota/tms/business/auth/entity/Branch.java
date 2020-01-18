@@ -22,9 +22,12 @@ public class Branch extends BaseEntity {
     @Column(name = "branch_name")
     private String branchName;
 
-    @Column(name = "branch_code")
+    @Column(name = "branch_code", updatable = false)
     private String branchCode;
 
     @Column(name = "branch_address")
     private String branchAddress;
+
+    @Column(name = "brand_id", updatable = false)
+    private Long brandId;
 }

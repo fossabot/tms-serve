@@ -32,6 +32,12 @@ public class RoleResource extends BaseResource<Role> {
     @Size(max = 2000, message = MessageCode.MSG_MAX_LENGTH)
     private String description;
 
+    private Long brandId;
+
+    private Long branchId;
+
+    private boolean isRoot;
+
     public RoleResource(Long id) {
         super(id);
     }
@@ -46,5 +52,9 @@ public class RoleResource extends BaseResource<Role> {
     public static class RoleCondition extends BaseCondition {
 
         private String roleName;
+
+        private Long brandId;
+
+        private Long branchId;
     }
 }

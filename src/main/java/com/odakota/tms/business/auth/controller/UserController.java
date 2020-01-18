@@ -5,7 +5,7 @@ import com.odakota.tms.business.auth.resource.UserResource;
 import com.odakota.tms.business.auth.service.UserService;
 import com.odakota.tms.business.transfers.ExportService;
 import com.odakota.tms.constant.ApiVersion;
-import com.odakota.tms.enums.ApiId;
+import com.odakota.tms.enums.auth.ApiId;
 import com.odakota.tms.enums.FileGroup;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;

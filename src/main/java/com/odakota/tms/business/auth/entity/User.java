@@ -53,4 +53,7 @@ public class User extends BaseEntity {
 
     @Column(name = "branch_id")
     private Long branchId;
+
+    @Column(name = "brand_id")
+    private Long brandId;
 }

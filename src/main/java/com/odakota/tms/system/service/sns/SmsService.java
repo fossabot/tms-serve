@@ -29,7 +29,7 @@ public class SmsService {
                 .withStringValue("0.5") //Sets the max price to 0.50 USD.
                 .withDataType("Number"));
         smsAttributes.put("AWS.SNS.SMS.SMSType", new MessageAttributeValue()
-                .withStringValue("Transactional") //Sets the type to promotional.
+                .withStringValue("Promotional") //Sets the type to promotional.
                 .withDataType("String"));
         amazonSNS.publish(new PublishRequest().withMessage(message).withPhoneNumber(phoneNumber)
                                               .withMessageAttributes(smsAttributes));
