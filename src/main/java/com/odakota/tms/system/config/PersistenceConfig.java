@@ -37,7 +37,7 @@ public class PersistenceConfig {
 
         @Override
         public Optional<Long> getCurrentAuditor() {
-            return userSession == null ? Optional.empty() : Optional.of(userSession.getUserId());
+            return userSession.getUserId() == null ? Optional.empty() : Optional.of(userSession.getUserId());
         }
 
     }
