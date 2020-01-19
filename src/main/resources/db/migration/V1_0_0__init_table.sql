@@ -12,6 +12,7 @@ create table brand_tbl (
     created_date timestamp,
     deleted_flag boolean default false
 );
+create unique index brand_uq1 on brand_tbl (brand_code) where deleted_flag = false;
 
 --
 -- Table structure for table branch_tbl
@@ -29,6 +30,7 @@ create table branch_tbl (
     deleted_flag   boolean default false,
     foreign key (brand_id) references brand_tbl (id)
 );
+create unique index branch_uq1 on branch_tbl (branch_code) where deleted_flag = false;
 
 --
 -- Table structure for table role_tbl
@@ -47,8 +49,10 @@ create table role_tbl (
     created_date timestamp,
     deleted_flag boolean default false,
     foreign key (branch_id) references branch_tbl (id),
-    foreign key (brand_id) references brand_tbl (id)
+    foreign key (brand_id) references brand_tbl (id),
+    constraint role_ct1 check ( branch_id is null or (brand_id is not null and branch_id is not null) )
 );
+create unique index role_uq1 on role_tbl (role_code) where deleted_flag = false;
 
 --
 -- Table structure for table user_tbl
@@ -62,7 +66,7 @@ create table user_tbl (
     birth_date   date,
     avatar       varchar(500),
     email        varchar(45)  not null,
-    phone        varchar(45),
+    phone        varchar(45)  not null,
     branch_id    bigint,
     brand_id     bigint,
     disable_flag boolean      not null default false,
@@ -72,9 +76,13 @@ create table user_tbl (
     created_date timestamp,
     deleted_flag boolean               default false,
     foreign key (branch_id) references branch_tbl (id),
-    foreign key (brand_id) references brand_tbl (id)
+    foreign key (brand_id) references brand_tbl (id),
+    constraint user_ct1 check ( branch_id is null or (brand_id is not null and branch_id is not null) )
 );
 comment on column user_tbl.sex is 'Gender: 0-Other, 1-Male, 2-Female';
+create unique index user_uq1 on user_tbl (user_name) where deleted_flag = false;
+create unique index user_uq2 on user_tbl (phone) where deleted_flag = false;
+create unique index user_uq3 on user_tbl (email) where deleted_flag = false;
 
 --
 -- Table structure for table permission_tbl
@@ -356,6 +364,51 @@ create table access_token_tbl (
 );
 
 --
+-- Table structure for table notification_tbl
+--
+create table notification_tbl (
+    id           bigint primary key generated always as identity,
+    title        varchar(64) not null,
+    content      text        not null,
+    start_date   timestamp   not null,
+    end_date     timestamp,
+    sender       varchar(128),
+    priority     smallint,
+    type         smallint,
+    send_status  smallint,
+    send_time    timestamp,
+    cancel_time  timestamp,
+    updated_by   bigint,
+    created_by   bigint,
+    updated_date timestamp,
+    created_date timestamp,
+    deleted_flag boolean default false
+);
+comment on column notification_tbl.priority is 'Priority (1: Low, 2: Medium, 3: High)';
+comment on column notification_tbl.type is 'Message Type 1: Notification Bulletin 2: System Message';
+comment on column notification_tbl.send_status is 'Release status (1 unpublished, 2 published, 3 revoked)';
+
+--
+-- Table structure for table notification_user_tbl
+--
+create table notification_user_tbl (
+    id              bigint primary key generated always as identity,
+    user_id         bigint not null,
+    notification_id bigint not null,
+    is_read         boolean,
+    read_time       timestamp,
+    updated_by      bigint,
+    created_by      bigint,
+    updated_date    timestamp,
+    created_date    timestamp,
+    deleted_flag    boolean default false,
+    foreign key (notification_id) references notification_tbl (id),
+    foreign key (user_id) references user_tbl (id)
+);
+
+--//----------------------------------------------------------------------------------------------------------------//--
+
+--
 -- Insert data to table `brand_tbl`
 --
 insert into brand_tbl (brand_name, brand_code, brand_image, updated_by, created_by, updated_date, created_date,
@@ -379,12 +432,12 @@ insert into role_tbl (role_name, role_code, description, brand_id, branch_id, is
 values ('Super Administrator System', 'root',
         'This is the highest role of the system, created when the system initialized, can not be edited or deleted.',
         null, null, true, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
-       ('Admin brand', 'juno.admin', 'This is the highest role of the Juno brand.', 1, null, true, 1, 1,
+       ('Admin brand', 'brand.admin', 'This is the highest role of the brand.', 1, null, true, 1, 1,
         '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
-       ('Admin Headquarters', 'juno.admin.ho', 'This is the highest role of the headquarters of the Juno brand.', 1, 1,
-        true, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
-       ('Staff', 'juno.staff.ho', 'This is the normal role of the Juno Brand Headquarters.',
-        1, 1, false, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false);
+       ('Admin branch', 'branch.admin', 'This is the highest role of the branch.', 1, 1, true, 1, 1,
+        '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
+       ('User', 'user', 'This is the normal role.', 1, 1, false, 1, 1, '2019-09-01 00:00:00.000000',
+        '2019-09-01 00:00:00.000000', false);
 
 --
 -- Insert data to table `user_tbl`
@@ -392,7 +445,16 @@ values ('Super Administrator System', 'root',
 insert into user_tbl(user_name, password, full_name, sex, birth_date, avatar, email, phone, disable_flag, brand_id,
                      branch_id, updated_by, created_by, updated_date, created_date, deleted_flag)
 values ('root', '$2a$10$DVdKtQPt6gByXrXZNtMU8.7g5LL.TpLXno72T7NY03zzLt6382iLG', 'Đoàn Hải', 1, '1995-01-02',
-        '/user/1/avatar/logo-2_1547868176839.png', 'doanhai8080@gmail.com', '0982445665', false,
+        '/user/1/avatar/logo-2_1547868176839.png', 'doanhai8080@gmail.com', '+84982445665', false,
+        null, null, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
+       ('brand.admin', '$2a$10$DVdKtQPt6gByXrXZNtMU8.7g5LL.TpLXno72T7NY03zzLt6382iLG', 'Đoàn Hải', 1, '1995-01-02',
+        '/user/1/avatar/logo-2_1547868176839.png', 'doanhai8081@gmail.com', '+84982445666', false,
+        null, null, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
+       ('branch.admin', '$2a$10$DVdKtQPt6gByXrXZNtMU8.7g5LL.TpLXno72T7NY03zzLt6382iLG', 'Đoàn Hải', 1, '1995-01-02',
+        '/user/1/avatar/logo-2_1547868176839.png', 'doanhai8082@gmail.com', '+84982445667', false,
+        null, null, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
+       ('user', '$2a$10$DVdKtQPt6gByXrXZNtMU8.7g5LL.TpLXno72T7NY03zzLt6382iLG', 'Đoàn Hải', 1, '1995-01-02',
+        '/user/1/avatar/logo-2_1547868176839.png', 'doanhai8083@gmail.com', '+84982445668', false,
         null, null, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false);
 
 --
@@ -408,7 +470,8 @@ values (1, 'Home', null, '/dashboard/analysis', 'dashboard/Analysis', null, null
        (2, 'System Management', null, '/system', 'layouts/RouteView', null, null, 0, null, null, 2.00, false, 'setting',
         true, false, null, false, null, false, null, null, 1, 1, '2019-01-01 00:00:00.000000',
         '2019-01-01 00:00:00.000000', false),
-       (20, 'Role management', 2, '/system/role', 'system/RoleList', null, null, 1, null, null, 3.00, false, null, true,
+       (20, 'Role management', 2, '/system/role', 'system/RoleList', null, null, 1, null, null, 3.00, false,
+        'security-scan', true,
         false, null, false, null, false, null, null, 1, 1, '2019-01-01 00:00:00.000000', '2019-01-01 00:00:00.000000',
         false),
        (2000, 'Create role', 20, null, null, null, null, 2, 'role:create', '1', 1.00, false, null, false, true, null,
@@ -426,7 +489,8 @@ values (1, 'Home', null, '/dashboard/analysis', 'dashboard/Analysis', null, null
        (2006, 'Authorize role', 20, null, null, null, null, 2, 'role:permission:update', '1', 7.00, false, null, false,
         true, null, false, null, false, true, null, 1, 1, '2019-01-01 00:00:00.000000', '2019-01-01 00:00:00.000000',
         false),
-       (21, 'User Management', 2, '/system/user', 'system/UserList', null, null, 1, null, null, 4.00, false, null, true,
+       (21, 'User Management', 2, '/system/user', 'system/UserList', null, null, 1, null, null, 4.00, false, 'user',
+        true,
         false, null, false, null, false, null, null, 1, 1, '2019-01-01 00:00:00.000000', '2019-01-01 00:00:00.000000',
         false),
        (2100, 'Create user', 21, null, null, null, null, 2, 'user:create', '1', 1.00, false, null, false, true, null,
@@ -442,10 +506,10 @@ values (1, 'Home', null, '/dashboard/analysis', 'dashboard/Analysis', null, null
        (2105, 'Import user', 21, null, null, null, null, 2, 'user:import', '1', 6.00, false, null, false, true, null,
         false, null, false, true, null, 1, 1, '2019-01-01 00:00:00.000000', '2019-01-01 00:00:00.000000', false),
        (22, 'Menu management', 2, '/system/permission', 'system/PermissionList', null, null, 1, null, '1', 5.00, false,
-        null, true, false, false, false, null, false, null, false, 1, 1, '2019-01-01 00:00:00.000000',
+        'menu-unfold', true, false, false, false, null, false, null, false, 1, 1, '2019-01-01 00:00:00.000000',
         '2019-01-01 00:00:00.000000', false),
        (23, 'Branch management', 2, '/system/branch', 'system/BranchList', null, null, 1, null, '1', 6.00, false,
-        null, true, false, false, false, null, false, null, false, 1, 1, '2019-01-01 00:00:00.000000',
+        'branches', true, false, false, false, null, false, null, false, 1, 1, '2019-01-01 00:00:00.000000',
         '2019-01-01 00:00:00.000000', false),
        (2300, 'Create branch', 23, null, null, null, null, 2, 'branch:create', '1', 1.00, false, null, false,
         true, null, false, null, false, true, null, 1, 1, '2019-01-01 00:00:00.000000', '2019-01-01 00:00:00.000000',
@@ -461,7 +525,7 @@ values (1, 'Home', null, '/dashboard/analysis', 'dashboard/Analysis', null, null
        (2305, 'Import branch', 23, null, null, null, null, 2, 'branch:import', '1', 6.00, false, null, false, true,
         null, false, null, false, true, null, 1, 1, '2019-01-01 00:00:00.000000', '2019-01-01 00:00:00.000000', false),
        (24, 'Brand management', 2, '/system/brand', 'system/BrandList', null, null, 1, null, '1', 6.00, false,
-        null, true, false, false, false, null, false, null, false, 1, 1, '2019-01-01 00:00:00.000000',
+        'tag', true, false, false, false, null, false, null, false, 1, 1, '2019-01-01 00:00:00.000000',
         '2019-01-01 00:00:00.000000', false),
        (2400, 'Create brand', 24, null, null, null, null, 2, 'brand:create', '1', 1.00, false, null, false,
         true, null, false, null, false, true, null, 1, 1, '2019-01-01 00:00:00.000000', '2019-01-01 00:00:00.000000',
@@ -495,4 +559,7 @@ where r.id = 1
 -- Insert data to table `user_role_tbl`
 --
 insert into user_role_tbl(role_id, user_id, updated_by, created_by, updated_date, created_date, deleted_flag)
-values (1, 1, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false);
+values (1, 1, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
+       (2, 2, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
+       (3, 3, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false),
+       (4, 4, 1, 1, '2019-09-01 00:00:00.000000', '2019-09-01 00:00:00.000000', false);

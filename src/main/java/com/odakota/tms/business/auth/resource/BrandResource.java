@@ -12,9 +12,9 @@ import lombok.Setter;
  * @author haidv
  * @version 1.0
  */
+@Setter @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter @Getter
 public class BrandResource extends BaseResource<Brand> {
 
     private static final long serialVersionUID = 1L;
