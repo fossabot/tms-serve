@@ -9,19 +9,12 @@ import lombok.Setter;
  * @author haidv
  * @version 1.0
  */
+@Setter @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResetPasswordResource {
 
-    @Setter @Getter
-    private String userName;
+    private String username;
 
-    @Setter @Getter
     private String password;
-
-    @Setter @Getter
-    private String passwordConfirm;
-
-    @Setter @Getter
-    private String verifyCode;
 }

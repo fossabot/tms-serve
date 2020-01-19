@@ -1,6 +1,7 @@
 package com.odakota.tms.business.auth.controller;
 
 import com.odakota.tms.business.auth.resource.LoginResource;
+import com.odakota.tms.business.auth.resource.ResetPasswordResource;
 import com.odakota.tms.business.auth.service.LoginService;
 import com.odakota.tms.business.auth.service.UserService;
 import com.odakota.tms.constant.ApiVersion;
@@ -40,7 +41,7 @@ public class LoginController {
     @NoAuthentication
     @PostMapping(value = "/token", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> login(@RequestParam Client client, @RequestParam LoginType loginType,
-                                          @RequestBody LoginResource resource) {
+                                   @RequestBody LoginResource resource) {
         return ResponseEntity.ok(new ResponseData<>().success(loginService.login(resource, client, loginType)));
     }
 
@@ -103,13 +104,27 @@ public class LoginController {
     }
 
     /**
+     * API forgot password step 2: verify otp
+     *
+     * @param phone phone
+     * @return {@link ResponseEntity}
+     */
+    @NoAuthentication
+    @GetMapping(value = "/forgot-password/step2", produces = ApiVersion.API_VERSION_1)
+    public ResponseEntity<?> forgotPassStep2(@RequestParam String phone, @RequestParam String captcha) {
+        loginService.checkForGotCaptcha(phone, captcha);
+        return ResponseEntity.ok(new ResponseData<>());
+    }
+
+    /**
      * API forgot password step 1: get user information with username
      *
      * @return {@link ResponseEntity}
      */
     @NoAuthentication
     @PostMapping(value = "/forgot-password/step3", produces = ApiVersion.API_VERSION_1)
-    public ResponseEntity<?> forgotPassStep3() {
-        return ResponseEntity.ok(new ResponseData<>());
+    public ResponseEntity<?> forgotPassStep3(@RequestBody ResetPasswordResource resetPasswordResource) {
+        loginService.resetPassword(resetPasswordResource);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -8,6 +8,7 @@ import com.odakota.tms.business.auth.repository.AccessTokenRepository;
 import com.odakota.tms.business.auth.repository.UserRepository;
 import com.odakota.tms.business.auth.resource.LoginResource;
 import com.odakota.tms.business.auth.resource.LoginResponse;
+import com.odakota.tms.business.auth.resource.ResetPasswordResource;
 import com.odakota.tms.business.auth.resource.userpermission.Auth;
 import com.odakota.tms.business.auth.resource.userpermission.Menu;
 import com.odakota.tms.business.auth.resource.userpermission.PermissionMetaResource;
@@ -85,7 +86,7 @@ public class LoginService {
      */
     public Object login(LoginResource loginResource, Client client, LoginType loginType) {
         // check captcha
-        this.checkCaptcha(loginResource, loginType);
+        String key = this.checkLoginCaptcha(loginResource, loginType);
         LoginResponse response = new LoginResponse();
         List<Long> roleIds = null;
         Long id;
@@ -124,6 +125,8 @@ public class LoginService {
             response.setToken(tokenProvider.generateToken(TokenType.ACCESS, Client.CUSTOMER, jti, map));
             response.setRefresh(tokenProvider.generateToken(TokenType.REFRESH, Client.CUSTOMER, refreshJti, map));
         }
+        // clear cache
+        otpGenerator.clearOTPFromCache(key);
         return response;
     }
 
@@ -340,12 +343,12 @@ public class LoginService {
     }
 
     /**
-     * Check captcha to match
+     * Check login captcha to match
      *
      * @param loginResource LoginResource
      * @param loginType     loginType
      */
-    private void checkCaptcha(LoginResource loginResource, LoginType loginType) {
+    private String checkLoginCaptcha(LoginResource loginResource, LoginType loginType) {
         String key;
         if (loginType.equals(LoginType.ACCOUNT)) {
             key = loginResource.getCheckKey();
@@ -353,15 +356,51 @@ public class LoginService {
             key = Constant.LOGIN_PHONE_PREFIX_KEY + loginResource.getPhone();
         }
         // check captcha
+        validateOtp(key, loginResource.getCaptcha());
+        return key;
+    }
+
+    /**
+     * Check forgot password captcha to match
+     *
+     * @param phone   String
+     * @param captcha String
+     */
+    public void checkForGotCaptcha(String phone, String captcha) {
+        String key = Constant.FORGOT_PASS_PREFIX_KEY + phone;
+        // check captcha
+        validateOtp(key, captcha);
+        // clear cache
+        otpGenerator.clearOTPFromCache(key);
+    }
+
+    /**
+     * Reset pass
+     *
+     * @param resource {@link ResetPasswordResource}
+     */
+    public void resetPassword(ResetPasswordResource resource) {
+        User user = userRepository
+                .findByUsernameAndDeletedFlagFalse(resource.getUsername())
+                .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS, HttpStatus.BAD_REQUEST));
+        user.setPassword(passwordEncoder.encode(resource.getPassword()));
+        userRepository.save(user);
+    }
+
+    /**
+     * Validate OTP to match
+     *
+     * @param key String
+     * @param otp String
+     */
+    private void validateOtp(String key, String otp) {
         Map<String, Object> map = otpGenerator.getOPTByKey(key);
         if (map == null || map.size() == 0) {
             throw new CustomException(MessageCode.MSG_CAPTCHA_EXPIRED, HttpStatus.BAD_REQUEST);
         }
-        if (!map.get(Constant.OTP_CODE_OTP).equals(loginResource.getCaptcha())) {
+        if (!map.get(Constant.OTP_CODE_OTP).equals(otp)) {
             throw new CustomException(MessageCode.MSG_CAPTCHA_INVALID, HttpStatus.BAD_REQUEST);
         }
-        // clear cache
-        otpGenerator.clearOTPFromCache(key);
     }
 
     /**
