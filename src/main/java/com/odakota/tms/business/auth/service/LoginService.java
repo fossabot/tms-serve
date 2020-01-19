@@ -379,12 +379,13 @@ public class LoginService {
      *
      * @param resource {@link ResetPasswordResource}
      */
-    public void resetPassword(ResetPasswordResource resource) {
+    public User resetPassword(ResetPasswordResource resource) {
         User user = userRepository
                 .findByUsernameAndDeletedFlagFalse(resource.getUsername())
                 .orElseThrow(() -> new CustomException(MessageCode.MSG_INVALID_USERNAME_PASS, HttpStatus.BAD_REQUEST));
         user.setPassword(passwordEncoder.encode(resource.getPassword()));
-        userRepository.save(user);
+        user = userRepository.save(user);
+        return user;
     }
 
     /**

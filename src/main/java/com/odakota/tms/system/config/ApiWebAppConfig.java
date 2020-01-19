@@ -7,6 +7,7 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -37,6 +38,11 @@ public class ApiWebAppConfig implements WebMvcConfigurer {
         return new UserSession();
     }
 
+    /**
+     * Add Spring MVC lifecycle interceptors for pre- and post-processing of controller method invocations and resource
+     * handler requests. Interceptors can be registered to apply to all requests or be limited to a subset of URL
+     * patterns.
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
@@ -46,6 +52,10 @@ public class ApiWebAppConfig implements WebMvcConfigurer {
                                      "/swagger-ui.html#!/**");
     }
 
+    /**
+     * Add handlers to serve static resources such as images, js, and, css files from specific locations under web
+     * application root, the classpath, and others.
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/webjars/**")
@@ -59,6 +69,15 @@ public class ApiWebAppConfig implements WebMvcConfigurer {
         final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.addTemplateResolver(textTemplateResolver());
         return templateEngine;
+    }
+
+    /**
+     * Inject ServerEndpointExporter, This bean will automatically register the Websocket endpoint using the
+     * @ServerEndpoint annotation declaration
+     */
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
     }
 
     private ITemplateResolver textTemplateResolver() {
