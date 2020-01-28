@@ -7,6 +7,7 @@ import com.odakota.tms.constant.ApiVersion;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.config.data.ResponseData;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class PermissionController extends BaseController<Permission, PermissionR
      * @return {@link ResponseEntity}
      */
     @RequiredAuthentication
+    @ApiOperation("API get list permissions")
     @GetMapping(value = "/permissions", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> getPermissions() {
         return ResponseEntity.ok(new ResponseData<>().success(permissionService.getPermissions()));

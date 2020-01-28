@@ -59,8 +59,9 @@ email:
   send:
     from: doanhai8080@gmail.com
 storage-service:
-  cdn-storage-name: /tmp/images/
-  exports-storage-name: /tmp/imports/
+  cdn-storage-name: /tmp/dev/images/
+  exports-storage-name: /tmp/dev/imports/
+  cdn-url: https://${storage-service.cdn-storage-name}\.${cloud.aws.region.static}\.amazonaws.com/
 auth:
   token:
     admin:

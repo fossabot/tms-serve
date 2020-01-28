@@ -1,6 +1,6 @@
 //package com.odakota.tms.system.service.email;
 //
-//import com.odakota.tms.enums.TemplateName;
+//import com.odakota.tms.enums.file.TemplateName;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.core.io.ByteArrayResource;
 //import org.springframework.core.io.FileSystemResource;

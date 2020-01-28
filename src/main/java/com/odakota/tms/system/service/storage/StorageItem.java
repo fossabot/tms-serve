@@ -1,6 +1,6 @@
 package com.odakota.tms.system.service.storage;
 
-import com.odakota.tms.enums.StorageItemType;
+import com.odakota.tms.enums.file.StorageItemType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

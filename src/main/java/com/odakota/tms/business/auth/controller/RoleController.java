@@ -3,13 +3,14 @@ package com.odakota.tms.business.auth.controller;
 import com.odakota.tms.business.auth.entity.Role;
 import com.odakota.tms.business.auth.resource.RoleResource;
 import com.odakota.tms.business.auth.service.RoleService;
-import com.odakota.tms.business.transfers.ExportService;
+import com.odakota.tms.business.files.service.ExportService;
 import com.odakota.tms.constant.ApiVersion;
+import com.odakota.tms.enums.file.FileGroup;
 import com.odakota.tms.enums.auth.ApiId;
-import com.odakota.tms.enums.FileGroup;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.base.BaseParameter;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
      * @param baseReq List acquisition request
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API get roles list")
     @RequiredAuthentication(value = ApiId.R_ROLE)
     @GetMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> getRoles(@ModelAttribute @Valid BaseParameter baseReq) {
@@ -58,6 +60,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
      * @param id role id
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API get role by id")
     @RequiredAuthentication(value = ApiId.R_ROLE)
     @GetMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> getRole(@PathVariable Long id) {
@@ -70,6 +73,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
      * @param resource {@link RoleResource}
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API create new role")
     @RequiredAuthentication(value = ApiId.C_ROLE)
     @PostMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> createRole(@Validated @RequestBody RoleResource resource) {
@@ -83,6 +87,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
      * @param resource {@link RoleResource}
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API update role")
     @RequiredAuthentication(value = ApiId.U_ROLE)
     @PutMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody RoleResource resource) {
@@ -95,6 +100,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
      * @param id role id
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API delete role")
     @RequiredAuthentication(value = ApiId.D_ROLE)
     @DeleteMapping(value = "/roles/{id}", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
@@ -107,6 +113,7 @@ public class RoleController extends BaseController<Role, RoleResource> {
      * @param ids list role id
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API batch delete role")
     @RequiredAuthentication(value = ApiId.D_ROLE)
     @DeleteMapping(value = "/roles", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<Void> batchDeleteRole(@RequestParam List<Long> ids) {
@@ -118,12 +125,13 @@ public class RoleController extends BaseController<Role, RoleResource> {
      *
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API export role")
     @RequiredAuthentication(value = ApiId.E_ROLE)
     @GetMapping(value = "/roles/export", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<byte[]> exportRole(HttpServletResponse response) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(
-                MediaType.APPLICATION_OCTET_STREAM);//MediaType.parseMediaType("application/vnd.ms-excel")
+        //MediaType.parseMediaType("application/vnd.ms-excel")
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return new ResponseEntity<>(exportService.export(FileGroup.ROLE, response), headers, HttpStatus.OK);
     }
 }

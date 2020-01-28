@@ -1,6 +1,6 @@
 package com.odakota.tms.business.auth.mapper.convert;
 
-import com.odakota.tms.enums.Gender;
+import com.odakota.tms.enums.auth.Gender;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
