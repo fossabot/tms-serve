@@ -2,7 +2,7 @@ package com.odakota.tms.business.auth.mapper;
 
 import com.odakota.tms.business.auth.entity.*;
 import com.odakota.tms.business.auth.resource.*;
-import com.odakota.tms.enums.Gender;
+import com.odakota.tms.enums.auth.Gender;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

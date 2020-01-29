@@ -8,6 +8,7 @@ import com.odakota.tms.enums.auth.ApiId;
 import com.odakota.tms.system.annotations.RequiredAuthentication;
 import com.odakota.tms.system.base.BaseController;
 import com.odakota.tms.system.base.BaseParameter;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -36,6 +37,7 @@ public class BrandController extends BaseController<Brand, BrandResource> {
      * @param baseReq List acquisition request
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API get brand list")
     @RequiredAuthentication(value = ApiId.R_BRAND)
     @GetMapping(value = "/brands", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> getBrands(@ModelAttribute @Valid BaseParameter baseReq) {
@@ -48,6 +50,7 @@ public class BrandController extends BaseController<Brand, BrandResource> {
      * @param id role id
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API get brand by id")
     @RequiredAuthentication(value = ApiId.R_BRAND)
     @GetMapping(value = "/brands/{id}", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> getBrand(@PathVariable Long id) {
@@ -60,6 +63,7 @@ public class BrandController extends BaseController<Brand, BrandResource> {
      * @param resource {@link BrandResource}
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API create new brand")
     @RequiredAuthentication(value = ApiId.C_BRAND)
     @PostMapping(value = "/brands", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> createBrand(@Validated @RequestBody BrandResource resource) {
@@ -73,6 +77,7 @@ public class BrandController extends BaseController<Brand, BrandResource> {
      * @param resource {@link BrandResource}
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API update brand")
     @RequiredAuthentication(value = ApiId.U_BRAND)
     @PutMapping(value = "/brands/{id}", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<?> updateBrand(@PathVariable Long id, @RequestBody BrandResource resource) {
@@ -85,6 +90,7 @@ public class BrandController extends BaseController<Brand, BrandResource> {
      * @param id brand id
      * @return {@link ResponseEntity}
      */
+    @ApiOperation("API delete brand")
     @RequiredAuthentication(value = ApiId.D_BRAND)
     @DeleteMapping(value = "/brands/{id}", produces = ApiVersion.API_VERSION_1)
     public ResponseEntity<Void> deleteBrand(@PathVariable Long id) {

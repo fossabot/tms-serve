@@ -54,6 +54,8 @@ public class MessageCode {
     public static final String MSG_DELETE_S3_FAIL = "delete.s3.fail";
     public static final String MSG_COPY_S3_FAIL = "copy.s3.fail";
     public static final String MSG_FILE_NOT_FOUND = "file.not.existed";
+    public static final String MSG_IMAGE_MAX_SIZE = "image.max.size";
+    public static final String MSG_INVALID_IMAGE_TYPE = "invalid.image-type";
     public static final String MSG_BRANCH_CODE_EXISTED = "branch.code.existed";
     public static final String MSG_BRANCH_NOT_DELETED = "branch.not.deleted";
     public static final String MSG_BRAND_NOT_DELETED = "brand.not.deleted";

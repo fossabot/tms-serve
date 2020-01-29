@@ -1,7 +1,7 @@
 package com.odakota.tms.business.auth.entity;
 
 import com.odakota.tms.business.auth.mapper.convert.GenderConverter;
-import com.odakota.tms.enums.Gender;
+import com.odakota.tms.enums.auth.Gender;
 import com.odakota.tms.system.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;

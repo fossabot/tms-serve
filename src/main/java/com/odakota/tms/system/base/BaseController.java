@@ -1,6 +1,8 @@
 package com.odakota.tms.system.base;
 
+import com.odakota.tms.business.files.service.ExportService;
 import com.odakota.tms.system.config.data.ResponseData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +22,9 @@ import java.util.List;
 public abstract class BaseController<E extends BaseEntity, R extends BaseResource<E>> {
 
     private final BaseService<E, R, ?> service;
+
+    @Autowired
+    private ExportService<E> exportService;
 
     protected BaseController(BaseService<E, R, ?> service) {
         this.service = service;
