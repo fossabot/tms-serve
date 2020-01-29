@@ -2,6 +2,8 @@ Overview
 ----
 
 ## Technologies used in this project
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fodakota%2Ftms-serve.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fodakota%2Ftms-serve?ref=badge_shield)
+
  
 - [Spring boot](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
 - [Postgres](https://www.postgresql.org/docs/)
@@ -47,3 +49,6 @@ cloud:
 ```
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fodakota%2Ftms-serve.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fodakota%2Ftms-serve?ref=badge_large)
