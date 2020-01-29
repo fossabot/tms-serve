@@ -32,6 +32,17 @@ https://www.postgresql.org/download/
 create database "tms-serve" owner postgres;
 ```
 
+- Fill key aws in application-dev.properties
+```
+cloud:
+  aws:
+    credentials:
+      accessKey: <<your aws accesskey>>
+      secretKey: <<your aws secretkey>>
+    region:
+      static: ap-southeast-1
+```
+
 - Development mode operation
 ```
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
